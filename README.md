@@ -18,3 +18,47 @@ The following limits apply
 * NewsAPI.org attribution required 
 
 See [here for pricing](https://newsapi.org/pricing)
+
+
+# Notes
+
+Three endpoints
+
+1. [Top Headlines](https://newsapi.org/docs/endpoints/top-headlines)
+2. [Everything](https://newsapi.org/docs/endpoints/everything)
+3. [Sources](https://newsapi.org/docs/endpoints/sources)
+
+General Structure
+
+```
+{
+    "status": "ok",
+    "totalResults": 36,
+    -
+    "articles": [
+        -
+        {
+            -
+            "source": {
+                "id": null,
+                "name": "Washingtonexaminer.com"
+            },
+            "author": "https://www.washingtonexaminer.com/author/becket-adams",
+            "title": "The New York Times is trying hard to clean up after AOC's Green New Deal mess - Washington Examiner",
+            "description": "It’s one thing for a newsroom to bend over backward and puff up a member of Congress. It’s another thing entirely to help that lawmaker push a lie.",
+            "url": "https://www.washingtonexaminer.com/opinion/the-new-york-times-is-trying-hard-to-clean-up-after-aocs-green-new-deal-mess",
+            "urlToImage": "https://mediadc.brightspotcdn.com/dims4/default/a1ee1e3/2147483647/strip/true/crop/2290x1202+0+0/resize/1200x630!/quality/90/?url=https%3A%2F%2Fmediadc.brightspotcdn.com%2F92%2Fab%2F23f9b7b84f76b964c4bd53007575%2Faoc-nyt.jpg",
+            "publishedAt": "2019-03-05T20:59:04Z",
+            "content": "Its one thing for a newsroom to bend over backward and puff up a member of Congress. Its another thing entirely to help that lawmaker push a lie. The New York Times did exactly that when it published a servile bit of spin this week in service of Rep. Alexand… [+3153 chars]"
+        }
+    ]
+}
+```
+
+### Structures
+
+* source
+* article -> source + author, title, url, urlToImage, publishedAt, content
+* articles -> collection of Article
+* request -> articles + status & totalResults
+
