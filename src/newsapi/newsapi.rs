@@ -80,13 +80,15 @@ impl NewsAPI {
         self
     }
 
-    pub fn page(&mut self, page: i32) -> &mut NewsAPI {
+    pub fn page(&mut self, page: u32) -> &mut NewsAPI {
         self.parameters.insert("page".to_owned(), page.to_string());
         self
     }
 
-    pub fn page_size(&mut self, size: i32) -> &mut NewsAPI {
-        self.parameters.insert("pageSize".to_owned(), size.to_string());
+    pub fn page_size(&mut self, size: u32) -> &mut NewsAPI {
+        if size > 1 && size <= 100 {
+            self.parameters.insert("pageSize".to_owned(), size.to_string());
+        }
         self
     }
 
@@ -138,6 +140,8 @@ mod tests {
         let mut api = NewsAPI::new("123".to_owned());
         assert_eq!(api.parameters.get("pageSize"), None);
         api.page_size(30);
+        assert_eq!(api.parameters.get("pageSize"), Some(&"30".to_owned()));
+        api.page_size(400);
         assert_eq!(api.parameters.get("pageSize"), Some(&"30".to_owned()));
     }
 }
