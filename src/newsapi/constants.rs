@@ -1,12 +1,12 @@
 use std::collections::HashSet;
 use std::iter::FromIterator;
 
-const TOP_HEADLINES_URL: &'static str = "https://newsapi.org/v2/top-headlines";
-const EVERYTHING_URL: &'static str = "https://newsapi.org/v2/everything";
-const SOURCES_URL: &'static str = "https://newsapi.org/v2/sources";
+pub const TOP_HEADLINES_URL: &'static str = "https://newsapi.org/v2/top-headlines";
+pub const EVERYTHING_URL: &'static str = "https://newsapi.org/v2/everything";
+pub const SOURCES_URL: &'static str = "https://newsapi.org/v2/sources";
 
 lazy_static! {
-    static ref COUNTRIES: HashSet<&'static str> = {
+    pub static ref COUNTRIES: HashSet<&'static str> = {
         let options = vec![
             "ae", "ar", "at", "au", "be", "bg", "br", "ca", "ch", "cn", "co", "cu", "cz", "de",
             "eg", "fr", "gb", "gr", "hk", "hu", "id", "ie", "il", "in", "it", "jp", "kr", "lt",
@@ -15,13 +15,13 @@ lazy_static! {
         ];
         HashSet::from_iter(options)
     };
-    static ref LANGUAGES: HashSet<&'static str> = {
+    pub static ref LANGUAGES: HashSet<&'static str> = {
         let options = vec![
             "ar", "en", "cn", "de", "es", "fr", "he", "it", "nl", "no", "pt", "ru", "sv", "ud",
         ];
         HashSet::from_iter(options)
     };
-    static ref CATEGORIES: HashSet<&'static str> = {
+    pub static ref CATEGORIES: HashSet<&'static str> = {
         let options = vec![
             "business",
             "entertainment",
@@ -33,7 +33,7 @@ lazy_static! {
         ];
         HashSet::from_iter(options)
     };
-    static ref SORT_METHOD: HashSet<&'static str> = {
+    pub static ref SORT_METHOD: HashSet<&'static str> = {
         let options = vec!["relevancy", "popularity", "publishedAt"];
         HashSet::from_iter(options)
     };

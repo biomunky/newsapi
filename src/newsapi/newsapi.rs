@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use chrono::prelude::*;
+use super::constants;
 
 #[derive(Debug)]
 pub struct NewsAPI {
@@ -93,7 +94,9 @@ impl NewsAPI {
     }
 
     pub fn language(&mut self, language: String) -> &mut NewsAPI {
-        self.parameters.insert("language".to_owned(), language);
+        if constants::LANGUAGES.contains(&*language) {
+            self.parameters.insert("language".to_owned(), language);
+        }
         self
     }
 
@@ -101,12 +104,21 @@ impl NewsAPI {
         self.parameters.insert("sort_by".to_owned(), sort_by);
         self
     }
-
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn language() {
+        let mut api = NewsAPI::new("123".to_owned());
+        api.language("en".to_owned());
+        assert_eq!(api.parameters.get("language"), Some(&"en".to_owned()));
+
+        api.language("noSuchOption".to_owned());
+        assert_eq!(api.parameters.get("language"), Some(&"en".to_owned()));
+    }
 
     #[test]
     fn to_and_from() {
