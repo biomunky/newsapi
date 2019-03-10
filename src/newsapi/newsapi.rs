@@ -54,15 +54,21 @@ impl NewsAPI {
     }
 
     pub fn country(&mut self, country: String) -> &mut NewsAPI {
-        self.parameters.insert("country".to_owned(), country);
+        if constants::COUNTRIES.contains(&*country) {
+            self.parameters.insert("country".to_owned(), country);
+        }
         self
     }
 
-    pub fn category(&mut self, country: String) -> &mut NewsAPI {
-        self.parameters.insert("category".to_owned(), country);
+    pub fn category(&mut self, category: String) -> &mut NewsAPI {
+        if constants::CATEGORIES.contains(&*category) {
+            self.parameters.insert("category".to_owned(), category);
+        }
         self
     }
 
+    /// Use the /sources endpoint to locate these programmatically or look at the sources index. 
+    /// Note: you can't mix this param with the country or category params. This will be checked before calling the API
     pub fn sources(&mut self, country: String) -> &mut NewsAPI {
         self.parameters.insert("sources".to_owned(), country);
         self
@@ -111,6 +117,26 @@ mod tests {
     use super::*;
 
     #[test]
+    fn category() {
+        let mut api = NewsAPI::new("123".to_owned());
+        assert_eq!(api.parameters.get("category"), None);
+        api.category("science".to_owned());
+        assert_eq!(api.parameters.get("category"), Some(&"science".to_owned()));
+        api.category("DavidHasselhoff".to_owned());
+        assert_eq!(api.parameters.get("category"), Some(&"science".to_owned()));
+    }
+
+    #[test]
+    fn country() {
+        let mut api = NewsAPI::new("123".to_owned());
+        assert_eq!(api.parameters.get("country"), None);
+        api.country("de".to_owned());
+        assert_eq!(api.parameters.get("country"), Some(&"de".to_owned()));
+        api.country("HoffLand".to_owned());
+        assert_eq!(api.parameters.get("country"), Some(&"de".to_owned()));
+    }
+
+    #[test]
     fn language() {
         let mut api = NewsAPI::new("123".to_owned());
         api.language("en".to_owned());
@@ -141,14 +167,14 @@ mod tests {
     }
 
     #[test]
-    fn update_page() {
+    fn page() {
         let mut api = NewsAPI::new("123".to_owned());
         api.page(20);
         assert_eq!(api.parameters.get("page"), Some(&"20".to_owned()));
     }
 
     #[test]
-    fn update_page_size() {
+    fn page_size() {
         let mut api = NewsAPI::new("123".to_owned());
         assert_eq!(api.parameters.get("pageSize"), None);
         api.page_size(30);
