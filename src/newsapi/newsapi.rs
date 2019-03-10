@@ -1,6 +1,6 @@
-use std::collections::HashMap;
-use chrono::prelude::*;
 use super::constants;
+use chrono::prelude::*;
+use std::collections::HashMap;
 
 #[derive(Debug)]
 pub struct NewsAPI {
@@ -31,7 +31,10 @@ impl NewsAPI {
     /// A date and optional time for the oldest article allowed
     ///
     pub fn from(&mut self, from: DateTime<Utc>) -> &mut NewsAPI {
-        self.parameters.insert("from".to_owned(), from.format("%Y-%m-%dT%H:%M:%S").to_string());
+        self.parameters.insert(
+            "from".to_owned(),
+            from.format("%Y-%m-%dT%H:%M:%S").to_string(),
+        );
         self
     }
 
@@ -39,7 +42,8 @@ impl NewsAPI {
     /// A date and optional time for the newest article allowed
     ///
     pub fn to(&mut self, to: DateTime<Utc>) -> &mut NewsAPI {
-        self.parameters.insert("to".to_owned(), to.format("%Y-%m-%dT%H:%M:%S").to_string());
+        self.parameters
+            .insert("to".to_owned(), to.format("%Y-%m-%dT%H:%M:%S").to_string());
         self
     }
 
@@ -49,7 +53,8 @@ impl NewsAPI {
     }
 
     pub fn exclude_domains(&mut self, country: String) -> &mut NewsAPI {
-        self.parameters.insert("exclude_domains".to_owned(), country);
+        self.parameters
+            .insert("exclude_domains".to_owned(), country);
         self
     }
 
@@ -67,7 +72,7 @@ impl NewsAPI {
         self
     }
 
-    /// Use the /sources endpoint to locate these programmatically or look at the sources index. 
+    /// Use the /sources endpoint to locate these programmatically or look at the sources index.
     /// Note: you can't mix this param with the country or category params. This will be checked before calling the API
     pub fn sources(&mut self, country: String) -> &mut NewsAPI {
         self.parameters.insert("sources".to_owned(), country);
@@ -94,7 +99,8 @@ impl NewsAPI {
 
     pub fn page_size(&mut self, size: u32) -> &mut NewsAPI {
         if size > 1 && size <= 100 {
-            self.parameters.insert("pageSize".to_owned(), size.to_string());
+            self.parameters
+                .insert("pageSize".to_owned(), size.to_string());
         }
         self
     }
@@ -155,9 +161,14 @@ mod tests {
 
         api.to(to).from(from);
 
-        assert_eq!(api.parameters.get("from"), Some(&"2019-07-08T09:10:11".to_owned()));
-        assert_eq!(api.parameters.get("to"), Some(&"2019-07-09T09:10:11".to_owned()));
-        
+        assert_eq!(
+            api.parameters.get("from"),
+            Some(&"2019-07-08T09:10:11".to_owned())
+        );
+        assert_eq!(
+            api.parameters.get("to"),
+            Some(&"2019-07-09T09:10:11".to_owned())
+        );
     }
 
     #[test]

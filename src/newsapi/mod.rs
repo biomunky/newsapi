@@ -1,2 +1,2 @@
-pub mod newsapi;
 mod constants;
+pub mod newsapi;
