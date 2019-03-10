@@ -47,14 +47,14 @@ impl NewsAPI {
         self
     }
 
-    pub fn domains(&mut self, country: String) -> &mut NewsAPI {
-        self.parameters.insert("domains".to_owned(), country);
+    pub fn domains(&mut self, domains: String) -> &mut NewsAPI {
+        self.parameters.insert("domains".to_owned(), domains);
         self
     }
 
-    pub fn exclude_domains(&mut self, country: String) -> &mut NewsAPI {
+    pub fn exclude_domains(&mut self, domains: String) -> &mut NewsAPI {
         self.parameters
-            .insert("exclude_domains".to_owned(), country);
+            .insert("exclude_domains".to_owned(), domains);
         self
     }
 
@@ -74,8 +74,8 @@ impl NewsAPI {
 
     /// Use the /sources endpoint to locate these programmatically or look at the sources index.
     /// Note: you can't mix this param with the country or category params. This will be checked before calling the API
-    pub fn sources(&mut self, country: String) -> &mut NewsAPI {
-        self.parameters.insert("sources".to_owned(), country);
+    pub fn sources(&mut self, sources: String) -> &mut NewsAPI {
+        self.parameters.insert("sources".to_owned(), sources);
         self
     }
 
