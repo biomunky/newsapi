@@ -1,4 +1,5 @@
 use super::constants;
+use crate::newsapi::error::NewsApiError;
 use chrono::prelude::*;
 use std::collections::HashMap;
 
@@ -6,6 +7,7 @@ use std::collections::HashMap;
 pub struct NewsAPI {
     api_key: String,
     parameters: HashMap<String, String>,
+    url: Option<String>,
 }
 
 impl NewsAPI {
@@ -19,17 +21,99 @@ impl NewsAPI {
         NewsAPI {
             api_key: api_key,
             parameters: HashMap::new(),
+            url: None,
         }
     }
 
-    //
-    // Gitler:
-    // There are crates for this but I don't want to use them yet
-    //
+    pub fn get_everything(&mut self) -> &mut NewsAPI {
+        let allowed_params = vec![
+            "q",
+            "sources",
+            "domains",
+            "excludeDomains",
+            "from",
+            "to",
+            "language",
+            "sortBy",
+            "pageSize",
+            "page",
+        ];
+
+        self.url = Some(self.build_url(allowed_params));
+        self
+    }
+
+    pub fn get_top_headlines(&mut self) -> &mut NewsAPI {
+        let allowed_params = vec!["q", "country", "category", "sources", "pageSize", "page"];
+        self.url = Some(self.build_url(allowed_params));
+        self
+    }
+
+    pub fn get_sources(&mut self) -> &mut NewsAPI {
+        let allowed_params = vec!["category", "language", "country"];
+        self.url = Some(self.build_url(allowed_params));
+        self
+    }
+
+    fn build_url(&self, allowed_params: Vec<&str>) -> String {
+        // TODO: can probably replace this with a fold
+        let mut params: Vec<String> = vec![];
+        for field in allowed_params {
+            self.parameters
+                .get(field)
+                .map(|v| params.push(format!("{}={}", field, v)));
+        }
+
+        let mut sources_url = constants::SOURCES_URL.clone().to_string();
+        if params.is_empty() {
+            sources_url
+        } else {
+            sources_url.push_str("?");
+            sources_url.push_str(&params.join("&"));
+            sources_url
+        }
+    }
 
     ///
-    /// A date and optional time for the oldest article allowed
+    /// Attempt to fetch the constructed resource
     ///
+    pub fn run(&self) -> Result<String, NewsApiError> {
+        if (self.parameters.contains_key("country") || self.parameters.contains_key("category"))
+            && self.parameters.contains_key("sources")
+        {
+            return Err(NewsApiError::InvalidParameterCombinationError);
+        }
+
+        match self
+            .url
+            .clone()
+            .map(|u| NewsAPI::fetch_resource(&u, &self.api_key))
+        {
+            Some(s) => s,
+            None => Err(NewsApiError::UndefinedUrlError),
+        }
+    }
+
+    fn fetch_resource(url: &str, api_key: &str) -> Result<String, NewsApiError> {
+        let client = reqwest::Client::new();
+        let u = url.clone();
+
+        let mut resp = client
+            .get(u)
+            .header("X-Api-Key", format!("{}", api_key))
+            .send()?;
+
+        if resp.status().is_success() {
+            Ok(resp.text()?)
+        } else {
+            Err(NewsApiError::BadRequest)
+        }
+    }
+
+    // Gitler:
+    // There are crates for this but I don't want to use them yet
+
+    /// A date and optional time for the oldest article allowed
     pub fn from(&mut self, from: DateTime<Utc>) -> &mut NewsAPI {
         self.parameters.insert(
             "from".to_owned(),
@@ -38,34 +122,39 @@ impl NewsAPI {
         self
     }
 
-    ///
     /// A date and optional time for the newest article allowed
-    ///
     pub fn to(&mut self, to: DateTime<Utc>) -> &mut NewsAPI {
         self.parameters
             .insert("to".to_owned(), to.format("%Y-%m-%dT%H:%M:%S").to_string());
         self
     }
 
+    ///  A comma-seperated string of domains
+    /// (eg bbc.co.uk, techcrunch.com, engadget.com) to restrict the search to.
     pub fn domains(&mut self, domains: Vec<&str>) -> &mut NewsAPI {
         self.parameters
             .insert("domains".to_owned(), domains.join(","));
         self
     }
 
+    /// A comma-seperated string of domains
+    /// (eg bbc.co.uk, techcrunch.com, engadget.com) to remove from the results.
     pub fn exclude_domains(&mut self, domains: Vec<&str>) -> &mut NewsAPI {
         self.parameters
             .insert("excludeDomains".to_owned(), domains.join(","));
         self
     }
 
-    pub fn country(&mut self, country: String) -> &mut NewsAPI {
+    /// Defaults to all countries - see constants.rs
+    pub fn country(&mut self, country: &str) -> &mut NewsAPI {
         if constants::COUNTRIES.contains(&*country) {
-            self.parameters.insert("country".to_owned(), country);
+            self.parameters
+                .insert("country".to_owned(), country.to_string());
         }
         self
     }
 
+    /// Defaults to all categories - see constants.rs
     pub fn category(&mut self, category: String) -> &mut NewsAPI {
         if constants::CATEGORIES.contains(&*category) {
             self.parameters.insert("category".to_owned(), category);
@@ -74,13 +163,13 @@ impl NewsAPI {
     }
 
     /// Use the /sources endpoint to locate these programmatically or look at the sources index.
-    /// Note: you can't mix this param with the country or category params. This will be checked before calling the API
+    /// Note: you can't mix this param with the country or category params.
+    /// This will be checked before calling the API but you can still get rekt!
     pub fn sources(&mut self, sources: String) -> &mut NewsAPI {
         self.parameters.insert("sources".to_owned(), sources);
         self
     }
 
-    // TODO: needs to urlencode the query string
     /// Keywords or phrases to search for.
     ///
     /// * Surround phrases with quotes (") for exact match.
@@ -106,15 +195,19 @@ impl NewsAPI {
         self
     }
 
-    pub fn language(&mut self, language: String) -> &mut NewsAPI {
+    pub fn language(&mut self, language: &str) -> &mut NewsAPI {
         if constants::LANGUAGES.contains(&*language) {
-            self.parameters.insert("language".to_owned(), language);
+            self.parameters
+                .insert("language".to_owned(), language.to_string());
         }
         self
     }
 
-    pub fn sort_by(&mut self, sort_by: String) -> &mut NewsAPI {
-        self.parameters.insert("sort_by".to_owned(), sort_by);
+    pub fn sort_by(&mut self, sort_by: &str) -> &mut NewsAPI {
+        if constants::SORT_METHOD.contains(&*sort_by) {
+            self.parameters
+                .insert("sort_by".to_owned(), sort_by.to_string());
+        }
         self
     }
 }
@@ -122,6 +215,17 @@ impl NewsAPI {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn build_url() {
+        let mut api = NewsAPI::new("123".to_owned());
+        api.language("en");
+        api.country("us");
+        let expected = "https://newsapi.org/v2/sources?language=en&country=us".to_owned();
+        let allowed_params = vec!["category", "language", "country"];
+        let url = api.build_url(allowed_params);
+        assert_eq!(expected, url);
+    }
 
     #[test]
     fn domains() {
@@ -159,19 +263,19 @@ mod tests {
     fn country() {
         let mut api = NewsAPI::new("123".to_owned());
         assert_eq!(api.parameters.get("country"), None);
-        api.country("de".to_owned());
+        api.country("de");
         assert_eq!(api.parameters.get("country"), Some(&"de".to_owned()));
-        api.country("HoffLand".to_owned());
+        api.country("HoffLand");
         assert_eq!(api.parameters.get("country"), Some(&"de".to_owned()));
     }
 
     #[test]
     fn language() {
         let mut api = NewsAPI::new("123".to_owned());
-        api.language("en".to_owned());
+        api.language("en");
         assert_eq!(api.parameters.get("language"), Some(&"en".to_owned()));
 
-        api.language("noSuchOption".to_owned());
+        api.language("noSuchOption");
         assert_eq!(api.parameters.get("language"), Some(&"en".to_owned()));
     }
 
