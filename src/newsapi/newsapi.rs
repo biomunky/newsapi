@@ -47,14 +47,15 @@ impl NewsAPI {
         self
     }
 
-    pub fn domains(&mut self, domains: String) -> &mut NewsAPI {
-        self.parameters.insert("domains".to_owned(), domains);
+    pub fn domains(&mut self, domains: Vec<&str>) -> &mut NewsAPI {
+        self.parameters
+            .insert("domains".to_owned(), domains.join(","));
         self
     }
 
-    pub fn exclude_domains(&mut self, domains: String) -> &mut NewsAPI {
+    pub fn exclude_domains(&mut self, domains: Vec<&str>) -> &mut NewsAPI {
         self.parameters
-            .insert("exclude_domains".to_owned(), domains);
+            .insert("excludeDomains".to_owned(), domains.join(","));
         self
     }
 
@@ -121,6 +122,28 @@ impl NewsAPI {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn domains() {
+        let mut api = NewsAPI::new("123".to_owned());
+
+        assert_eq!(api.parameters.get("domains"), None);
+        assert_eq!(api.parameters.get("excludeDomains"), None);
+
+        api.domains(vec!["www.bbc.co.uk"]);
+
+        api.exclude_domains(vec!["www.facebook.com", "www.brexitbart.com"]);
+
+        assert_eq!(
+            api.parameters.get("domains"),
+            Some(&"www.bbc.co.uk".to_owned())
+        );
+
+        assert_eq!(
+            api.parameters.get("excludeDomains"),
+            Some(&"www.facebook.com,www.brexitbart.com".to_owned())
+        );
+    }
 
     #[test]
     fn category() {
