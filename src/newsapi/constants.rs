@@ -1,8 +1,13 @@
 use std::collections::HashSet;
 use std::iter::FromIterator;
 
+#[allow(dead_code)]
 pub const TOP_HEADLINES_URL: &'static str = "https://newsapi.org/v2/top-headlines";
+
+#[allow(dead_code)]
 pub const EVERYTHING_URL: &'static str = "https://newsapi.org/v2/everything";
+
+#[allow(dead_code)]
 pub const SOURCES_URL: &'static str = "https://newsapi.org/v2/sources";
 
 lazy_static! {
