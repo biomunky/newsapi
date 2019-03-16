@@ -8,9 +8,12 @@ edition = "2018"
 name="newsapi"
 path="src/lib.rs"
 
+[[bin]]
+name = "newsbin"
+path = "src/bin.rs"
+
 [dependencies]
 lazy_static = "1.3"
 chrono = {version = "0.4", features = ["serde"]}
 reqwest = "0.9"
 custom_error = "1.6.0"
-
