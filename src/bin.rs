@@ -7,9 +7,11 @@ fn main() {
 
     let mut my_api = NewsAPI::new(key);
 
+    my_api.language("en");
+
     my_api.get_sources();
 
-    let r = my_api.run();
+    let r = my_api.send();
 
     println!("{:?}", r);
 

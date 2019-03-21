@@ -64,7 +64,8 @@ impl NewsAPI {
                 .map(|v| params.push(format!("{}={}", field, v)));
         }
 
-        let mut sources_url = constants::SOURCES_URL.clone().to_string();
+        let mut sources_url = constants::SOURCES_URL.to_owned();
+
         if params.is_empty() {
             sources_url
         } else {
@@ -77,7 +78,8 @@ impl NewsAPI {
     ///
     /// Attempt to fetch the constructed resource
     ///
-    pub fn run(&self) -> Result<String, NewsApiError> {
+    pub fn send(&self) -> Result<String, NewsApiError> {
+        // TODO: validate all the parameters before firing off request //
         if (self.parameters.contains_key("country") || self.parameters.contains_key("category"))
             && self.parameters.contains_key("sources")
         {
@@ -86,7 +88,7 @@ impl NewsAPI {
 
         match self
             .url
-            .clone()
+            .to_owned()
             .map(|u| NewsAPI::fetch_resource(&u, &self.api_key))
         {
             Some(s) => s,
@@ -149,7 +151,7 @@ impl NewsAPI {
     pub fn country(&mut self, country: &str) -> &mut NewsAPI {
         if constants::COUNTRIES.contains(&*country) {
             self.parameters
-                .insert("country".to_owned(), country.to_string());
+                .insert("country".to_owned(), country.to_owned());
         }
         self
     }
@@ -176,7 +178,8 @@ impl NewsAPI {
     /// * Prepend words or phrases that must appear with a + symbol. Eg: +bitcoin
     /// * Prepend words that must not appear with a - symbol. Eg: -bitcoin
     /// * Alternatively you can use the AND / OR / NOT keywords, and optionally group these with parenthesis. Eg: crypto AND (ethereum OR litecoin) NOT bitcoin
-    ///
+
+    // TODO: this requires escaping - use a library
     pub fn query(&mut self, query: String) -> &mut NewsAPI {
         self.parameters.insert("q".to_owned(), query);
         self
@@ -188,7 +191,7 @@ impl NewsAPI {
     }
 
     pub fn page_size(&mut self, size: u32) -> &mut NewsAPI {
-        if size > 1 && size <= 100 {
+        if size >= 1 && size <= 100 {
             self.parameters
                 .insert("pageSize".to_owned(), size.to_string());
         }
