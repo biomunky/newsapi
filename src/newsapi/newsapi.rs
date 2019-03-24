@@ -251,17 +251,14 @@ mod tests {
     #[test]
     fn handle_api_error() {
         let bad_request = NewsAPI::handle_api_error(400, "BadRequest".into());
-        assert_eq!(
-            bad_request.to_string(),
-            "BadRequest: 400 => BadRequest"
-        );
+        assert_eq!(bad_request.to_string(), "BadRequest: 400 => BadRequest");
 
-        let generic_error = NewsAPI::handle_api_error(418, "Hyper Text Coffee Pot Control Protocol".into());
+        let generic_error =
+            NewsAPI::handle_api_error(418, "Hyper Text Coffee Pot Control Protocol".into());
         assert_eq!(
             generic_error.to_string(),
             "GenericError: 418 => Hyper Text Coffee Pot Control Protocol"
         );
-
     }
 
     #[test]
