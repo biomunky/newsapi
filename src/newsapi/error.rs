@@ -1,6 +1,6 @@
 use custom_error::custom_error;
 
-custom_error! {pub NewsApiError
+custom_error! { pub NewsApiError
     InvalidParameterCombinationError = "The source parameter cannot be mixed with country or category",
     UndefinedUrlError = "Error constructing newsapi URL",
     GenericError{code: u16, message: String} = "GenericError: {code} => {message}",
