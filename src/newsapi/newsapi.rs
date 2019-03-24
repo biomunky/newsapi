@@ -3,6 +3,8 @@ use crate::newsapi::error::NewsApiError;
 use chrono::prelude::*;
 use std::collections::HashMap;
 
+use url::percent_encoding::{utf8_percent_encode, DEFAULT_ENCODE_SET};
+
 #[derive(Debug)]
 pub struct NewsAPI {
     api_key: String,
@@ -179,9 +181,11 @@ impl NewsAPI {
     /// * Prepend words that must not appear with a - symbol. Eg: -bitcoin
     /// * Alternatively you can use the AND / OR / NOT keywords, and optionally group these with parenthesis. Eg: crypto AND (ethereum OR litecoin) NOT bitcoin
 
-    // TODO: this requires escaping - use a library
     pub fn query(&mut self, query: String) -> &mut NewsAPI {
-        self.parameters.insert("q".to_owned(), query);
+        self.parameters.insert(
+            "q".to_owned(),
+            utf8_percent_encode(&query, DEFAULT_ENCODE_SET).to_string(),
+        );
         self
     }
 
@@ -218,6 +222,17 @@ impl NewsAPI {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn query() {
+        let mut api = NewsAPI::new("123".to_owned());
+        api.query("Ali loves the hoff NOT Baywatch".to_owned());
+        let encoded_param = api.parameters.get("q");
+        assert_eq!(
+            encoded_param,
+            Some(&"Ali%20loves%20the%20hoff%20NOT%20Baywatch".to_string())
+        );
+    }
 
     #[test]
     fn build_url() {
