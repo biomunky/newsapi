@@ -11,16 +11,15 @@ All you need is an API key to
 
 The following limits apply
 
-* 1,000 requests per day 
-* No extra requests available 
-* No uptime SLA 
-* Basic support 
-* NewsAPI.org attribution required 
+* 1,000 requests per day
+* No extra requests available
+* No uptime SLA
+* Basic support
+* NewsAPI.org attribution required
 
 See [here for pricing](https://newsapi.org/pricing)
 
-
-# Notes
+## Notes
 
 Three endpoints
 
@@ -30,7 +29,7 @@ Three endpoints
 
 General Structure
 
-```
+```json
 {
     "status": "ok",
     "totalResults": 36,
@@ -55,10 +54,9 @@ General Structure
 }
 ```
 
-### Structures
+## Structures
 
 * source
 * article -> source + author, title, url, urlToImage, publishedAt, content
 * articles -> collection of Article
 * request -> articles + status & totalResults
-
