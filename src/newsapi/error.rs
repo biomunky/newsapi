@@ -2,8 +2,11 @@ use custom_error::custom_error;
 
 custom_error! {pub NewsApiError
     InvalidParameterCombinationError = "The source parameter cannot be mixed with country or category",
-    UndefinedUrlError = "The NewsApi URL hasn't been constructed properly",
-    BadRequest = "Request did not return success - failing with a bad message!",
-    ReqwestError{source: reqwest::Error} = "boom!",
+    UndefinedUrlError = "Error constructing newsapi URL",
+    GenericError{code: u16, message: String} = "GenericError: {code} => {message}",
+    BadRequest{code: u16, message: String} = "BadRequest: {code} => {message}",
+    Unauthorized{code: u16, message: String} = "Unauthorized: {code} => {message}",
+    TooManyRequests{code: u16, message: String} = "TooManyRequests: {code} => {message}",
+    ServerError{code: u16, message: String} = "ServerError: {code} => {message}",
+    ReqwestError{source: reqwest::Error} = "Reqwest Failure!",
 }
-
