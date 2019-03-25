@@ -26,20 +26,19 @@ lazy_static! {
         ];
         HashSet::from_iter(options)
     };
-    pub static ref CATEGORIES: HashSet<&'static str> = {
-        let options = vec![
-            "business",
-            "entertainment",
-            "general",
-            "health",
-            "science",
-            "sports",
-            "technology",
-        ];
-        HashSet::from_iter(options)
-    };
     pub static ref SORT_METHOD: HashSet<&'static str> = {
         let options = vec!["relevancy", "popularity", "publishedAt"];
         HashSet::from_iter(options)
     };
+}
+
+#[derive(Debug)]
+pub enum Category {
+    Business,
+    Entertainment,
+    General,
+    Health,
+    Science,
+    Sports,
+    Technology,
 }
