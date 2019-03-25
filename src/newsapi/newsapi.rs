@@ -1,4 +1,5 @@
 use super::constants;
+use super::constants::Category;
 use crate::newsapi::error::NewsApiError;
 use chrono::prelude::*;
 use std::collections::HashMap;
@@ -184,10 +185,9 @@ impl NewsAPI {
     }
 
     /// Defaults to all categories - see constants.rs
-    pub fn category(&mut self, category: String) -> &mut NewsAPI {
-        if constants::CATEGORIES.contains(&*category) {
-            self.parameters.insert("category".to_owned(), category);
-        }
+    pub fn category(&mut self, category: Category) -> &mut NewsAPI {
+        let fmtd_category = format!("{:?}", category).to_lowercase();
+        self.parameters.insert("category".to_owned(), fmtd_category);
         self
     }
 
@@ -309,9 +309,7 @@ mod tests {
     fn category() {
         let mut api = NewsAPI::new("123".to_owned());
         assert_eq!(api.parameters.get("category"), None);
-        api.category("science".to_owned());
-        assert_eq!(api.parameters.get("category"), Some(&"science".to_owned()));
-        api.category("DavidHasselhoff".to_owned());
+        api.category(Category::Science);
         assert_eq!(api.parameters.get("category"), Some(&"science".to_owned()));
     }
 
