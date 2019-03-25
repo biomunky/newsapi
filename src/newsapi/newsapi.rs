@@ -130,7 +130,7 @@ impl NewsAPI {
 
         let mut resp = client
             .get(u)
-            .header("X-Api-Key", format!("{}", api_key))
+            .header("X-Api-Key", api_key)
             .send()?;
 
         if resp.status().is_success() {
