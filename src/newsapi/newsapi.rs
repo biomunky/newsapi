@@ -175,12 +175,9 @@ impl NewsAPI {
         self
     }
 
-    /// Defaults to all countries - see constants.rs
-    pub fn country(&mut self, country: &str) -> &mut NewsAPI {
-        if constants::COUNTRIES.contains(&*country) {
-            self.parameters
-                .insert("country".to_owned(), country.to_owned());
-        }
+    /// Narrow search to specific country
+    pub fn country(&mut self, country: constants::Country) -> &mut NewsAPI {
+        self.parameters.insert("country".to_owned(), constants::COUNTRY_LOOKUP[country].to_string());
         self
     }
 
@@ -276,7 +273,7 @@ mod tests {
     fn build_url() {
         let mut api = NewsAPI::new("123".to_owned());
         api.language("en");
-        api.country("us");
+        api.country(constants::Country::UnitedStatesofAmerica);
         let expected = "https://newsapi.org/v2/sources?language=en&country=us".to_owned();
         let allowed_params = vec!["category", "language", "country"];
         let url = api.build_url(allowed_params);
@@ -317,9 +314,7 @@ mod tests {
     fn country() {
         let mut api = NewsAPI::new("123".to_owned());
         assert_eq!(api.parameters.get("country"), None);
-        api.country("de");
-        assert_eq!(api.parameters.get("country"), Some(&"de".to_owned()));
-        api.country("HoffLand");
+        api.country(constants::Country::Germany);
         assert_eq!(api.parameters.get("country"), Some(&"de".to_owned()));
     }
 
