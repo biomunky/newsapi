@@ -32,13 +32,20 @@ lazy_static! {
     };
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum Category {
+    #[serde(rename = "business")]
     Business,
+    #[serde(rename = "entertainment")]
     Entertainment,
+    #[serde(rename = "general")]
     General,
+    #[serde(rename = "health")]
     Health,
+    #[serde(rename = "science")]
     Science,
+    #[serde(rename = "sports")]
     Sports,
+    #[serde(rename = "technology")]
     Technology,
 }

@@ -19,3 +19,7 @@ reqwest = "0.9"
 custom_error = "1.6.0"
 percent-encoding = "1.0"
 url = "1.7"
+serde = "1.0"
+serde_json = "1.0"
+serde_derive = "1.0"
+

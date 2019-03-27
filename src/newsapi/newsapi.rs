@@ -126,12 +126,9 @@ impl NewsAPI {
 
     fn fetch_resource(url: &str, api_key: &str) -> Result<String, NewsApiError> {
         let client = reqwest::Client::new();
-        let u = url.clone();
+        let u = url.to_string();
 
-        let mut resp = client
-            .get(u)
-            .header("X-Api-Key", api_key)
-            .send()?;
+        let mut resp = client.get(&u).header("X-Api-Key", api_key).send()?;
 
         if resp.status().is_success() {
             Ok(resp.text()?)

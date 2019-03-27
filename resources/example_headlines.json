@@ -1,0 +1,32 @@
+{
+    "status": "ok",
+    "totalResults": 2,
+    "articles": [
+        {
+            "source": {
+                "id": "the-washington-post",
+                "name": "The Washington Post"
+            },
+            "author": null,
+            "title": "House GOP leader McCarthy sought to deter Trump from pursuing destruction of Obamacare - The Washington Post",
+            "description": "The minority leader’s action underscores how nervous Republicans are about the strategy their president is pursuing.",
+            "url": "https://www.washingtonpost.com/politics/house-gop-leader-mccarthy-sought-to-deter-trump-from-pursuing-destruction-of-obamacare/2019/03/27/272b1632-50b1-11e9-8d28-f5149e5a2fda_story.html",
+            "urlToImage": "https://www.washingtonpost.com/resizer/w2poAwj_r5rTDhpbn8j619TC5Sc=/1484x0/arc-anglerfish-washpost-prod-washpost.s3.amazonaws.com/public/YE6PNDRP4QI6TBVLLUBBBGXLAE.jpg",
+            "publishedAt": "2019-03-27T19:16:39Z",
+            "content": "House Minority Leader Kevin McCarthy (R-Calif.) urged President Trump to hold off on pushing for a court-ordered destruction of the Affordable Care Act, advice the president ultimately ignored, according to a senior Republican official familiar with the conve… [+8749 chars]"
+        },
+        {
+            "source": {
+                "id": null,
+                "name": "Youtube.com"
+            },
+            "author": null,
+            "title": "Joel Klatt reveals his NFL Mock Draft, talks Cardinals-Rosen broken trust & defends Baker | THE HERD - The Herd with Colin Cowherd",
+            "description": null,
+            "url": "https://www.youtube.com/watch?v=B5dlk4v-7gg",
+            "urlToImage": null,
+            "publishedAt": "2019-03-27T19:11:28Z",
+            "content": null
+        }
+    ]
+}

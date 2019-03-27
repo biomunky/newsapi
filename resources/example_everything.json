@@ -1,0 +1,32 @@
+{
+    "status": "ok",
+    "totalResults": 2,
+    "articles": [
+        {
+            "source": {
+                "id": "wired",
+                "name": "Wired"
+            },
+            "author": "Amy Guthrie",
+            "title": "Anarchy, Bitcoin, and Murder in Acapulco",
+            "description": "The once-thriving resort city of in Mexico has become a somewhat lawless place. It is, in many ways, a perfect yet imperfect place for crypto-loving anarchists to gather each year.",
+            "url": "https://www.wired.com/story/anarchy-bitcoin-and-murder-in-mexico/",
+            "urlToImage": "https://media.wired.com/photos/5c78615d43416573f9b95f07/191:100/pass/anarchy-in-acapulco_topart_red.jpg",
+            "publishedAt": "2019-03-01T12:00:00Z",
+            "content": "Its approaching midnight as hundreds of anarchists gather at the edge of the surf at a beach in Acapulco, Mexico. Monica Vallarino urges the crowd to part in half. Shes holding dozens of Gulf sea turtle hatchlings in a plastic bowl. Its time to release them t… [+17491 chars]"
+        },
+        {
+            "source": {
+                "id": "engadget",
+                "name": "Engadget"
+            },
+            "author": "Rachel England",
+            "title": "Square will offer its new crypto employees payment in Bitcoin",
+            "description": "Payments startup Square is turning its attention to cryptocurrency. According to tweets from CEO Jack Dorsey, the company is hiring engineers and a designer to \"work full-time on open source contributions to the bitcoin/crypto ecosystem.\" #BitcoinTwitter and …",
+            "url": "https://www.engadget.com/2019/03/21/square-will-offer-its-new-crypto-employees-payment-in-bitcoin/",
+            "urlToImage": "https://o.aolcdn.com/images/dims?thumbnail=1200%2C630&quality=80&image_uri=https%3A%2F%2Fo.aolcdn.com%2Fimages%2Fdims%3Fcrop%3D4876%252C3584%252C0%252C0%26quality%3D85%26format%3Djpg%26resize%3D1600%252C1176%26image_uri%3Dhttps%253A%252F%252Fs.yimg.com%252Fos%252Fcreatr-images%252F2019-03%252Fd9c84040-4bc9-11e9-b3ff-31a53efd811d%26client%3Da1acac3e1b3290917d92%26signature%3D21e1a6ad3af11722ad08cb944c023fdd3c61f07f&client=amp-blogside-v2&signature=72000cc11529cea385ed8ecbdec6c9ceb02ca782",
+            "publishedAt": "2019-03-21T12:21:00Z",
+            "content": "#BitcoinTwitter and #CryptoTwitter! Square is hiring 3-4 crypto engineers and 1 designer to work full-time on open source contributions to the bitcoin/crypto ecosystem. Work from anywhere, report directly to me, and we can even pay you in bitcoin! Introducing… [+812 chars]"
+        }
+    ]
+}
