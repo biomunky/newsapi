@@ -1,7 +1,7 @@
+use enum_map::{enum_map, Enum, EnumMap};
+use lazy_static;
 use std::collections::HashSet;
 use std::iter::FromIterator;
-use enum_map::{EnumMap, Enum};
-use lazy_static;
 
 #[allow(dead_code)]
 pub const TOP_HEADLINES_URL: &str = "https://newsapi.org/v2/top-headlines";
