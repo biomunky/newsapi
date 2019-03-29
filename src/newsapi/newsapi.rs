@@ -62,9 +62,9 @@ impl NewsAPI {
         // TODO: can probably replace this with a fold
         let mut params: Vec<String> = vec![];
         for field in allowed_params {
-            self.parameters
-                .get(field)
-                .map(|v| params.push(format!("{}={}", field, v)));
+            if let Some(value) = self.parameters.get(field) {
+                params.push(format!("{}={}", field, value))
+            }
         }
 
         let mut sources_url = constants::SOURCES_URL.to_owned();
