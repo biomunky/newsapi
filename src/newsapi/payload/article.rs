@@ -32,28 +32,23 @@ mod tests {
     use std::fs;
     use std::path::PathBuf;
 
+    fn load_file(filename: &str) -> String {
+        let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        d.push(filename);
+        fs::read_to_string(d.as_path()).expect("Something went wrong reading the file")
+    }
+
     #[test]
     fn deserialize_everything() {
-        let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        d.push("resources/example_everything.json");
-
-        let contents =
-            fs::read_to_string(d.as_path()).expect("Something went wrong reading the file");
-
+        let contents = load_file("resources/example_everything.json");
         let articles: Articles = serde_json::from_str(&contents).unwrap();
-
         assert_eq!(articles.status, "ok");
         assert_eq!(articles.articles.len(), 2);
     }
 
     #[test]
     fn deserialize_headlines() {
-        let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        d.push("resources/example_headlines.json");
-
-        let contents =
-            fs::read_to_string(d.as_path()).expect("Something went wrong reading the file");
-
+        let contents = load_file("resources/example_headlines.json");
         let articles: Articles = serde_json::from_str(&contents).unwrap();
         assert_eq!(articles.total_results, 2);
         assert_eq!(articles.articles.len(), 2);
