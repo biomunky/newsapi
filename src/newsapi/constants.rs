@@ -13,15 +13,6 @@ pub const EVERYTHING_URL: &str = "https://newsapi.org/v2/everything";
 pub const SOURCES_URL: &str = "https://newsapi.org/v2/sources";
 
 lazy_static! {
-    pub static ref COUNTRIES: HashSet<&'static str> = {
-        let options = vec![
-            "ae", "ar", "at", "au", "be", "bg", "br", "ca", "ch", "cn", "co", "cu", "cz", "de",
-            "eg", "fr", "gb", "gr", "hk", "hu", "id", "ie", "il", "in", "it", "jp", "kr", "lt",
-            "lv", "ma", "mx", "my", "ng", "nl", "no", "nz", "ph", "pl", "pt", "ro", "rs", "ru",
-            "sa", "se", "sg", "si", "sk", "th", "tr", "tw", "ua", "us", "ve", "za",
-        ];
-        HashSet::from_iter(options)
-    };
     pub static ref LANGUAGES: HashSet<&'static str> = {
         let options = vec![
             "ar", "en", "cn", "de", "es", "fr", "he", "it", "nl", "no", "pt", "ru", "sv", "ud",
@@ -87,6 +78,24 @@ lazy_static! {
         Country::UnitedKingdomofGreatBritainandNorthernIreland => "gb",
         Country::UnitedStatesofAmerica => "us",
         Country::VenezuelaBolivarianRepublicof => "ve",
+    };
+    pub static ref LANG_LOOKUP: EnumMap<Language, &'static str> = enum_map! {
+        Language::Arabic => "ar",
+        Language::German => "de",
+        Language::English => "en",
+        Language::Spanish => "es",
+        Language::French => "fr",
+        Language::Hebrew => "he",
+        Language::Italian => "it",
+        Language::Dutch => "nl",
+        Language::Norwegian => "no",
+        Language::Portuguese => "pt",
+        Language::Russian => "ru",
+        Language::NorthernSami => "se",
+        // "ud" below is an incorrect ISO-639 code. The correct one for Urdu is "ur"
+        // @biomunky has emailed the NewsAPI devs and we are awaiting a response
+        Language::Urdu => "ud",
+        Language::Chinese => "zh",
     };
 }
 
@@ -157,4 +166,24 @@ pub enum Country {
     UnitedKingdomofGreatBritainandNorthernIreland,
     UnitedStatesofAmerica,
     VenezuelaBolivarianRepublicof,
+}
+
+// Language list below obtained from NewsAPI docs on 01/04/2019 https://newsapi.org/docs/endpoints/everything
+// "ar", "en", "cn", "de", "es", "fr", "he", "it", "nl", "no", "pt", "ru", "sv", "ud",
+#[derive(Debug, Enum)]
+pub enum Language {
+    Arabic,
+    German,
+    English,
+    Spanish,
+    French,
+    Hebrew,
+    Italian,
+    Dutch,
+    Norwegian,
+    Portuguese,
+    Russian,
+    NorthernSami,
+    Urdu,
+    Chinese,
 }

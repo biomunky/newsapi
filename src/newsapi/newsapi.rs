@@ -128,10 +128,7 @@ impl NewsAPI {
         let client = reqwest::Client::new();
         let u = url.clone();
 
-        let mut resp = client
-            .get(u)
-            .header("X-Api-Key", api_key)
-            .send()?;
+        let mut resp = client.get(u).header("X-Api-Key", api_key).send()?;
 
         if resp.status().is_success() {
             Ok(resp.text()?)
@@ -177,7 +174,10 @@ impl NewsAPI {
 
     /// Narrow search to specific country
     pub fn country(&mut self, country: constants::Country) -> &mut NewsAPI {
-        self.parameters.insert("country".to_owned(), constants::COUNTRY_LOOKUP[country].to_string());
+        self.parameters.insert(
+            "country".to_owned(),
+            constants::COUNTRY_LOOKUP[country].to_string(),
+        );
         self
     }
 
