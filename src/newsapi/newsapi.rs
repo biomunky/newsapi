@@ -224,11 +224,11 @@ impl NewsAPI {
         self
     }
 
-    pub fn language(&mut self, language: &str) -> &mut NewsAPI {
-        if constants::LANGUAGES.contains(&*language) {
-            self.parameters
-                .insert("language".to_owned(), language.to_string());
-        }
+    pub fn language(&mut self, language: constants::Language) -> &mut NewsAPI {
+        self.parameters.insert(
+            "language".to_owned(),
+            constants::LANG_LOOKUP[language].to_string(),
+        );
         self
     }
 
@@ -272,7 +272,7 @@ mod tests {
     #[test]
     fn build_url() {
         let mut api = NewsAPI::new("123".to_owned());
-        api.language("en");
+        api.language(constants::Language::English);
         api.country(constants::Country::UnitedStatesofAmerica);
         let expected = "https://newsapi.org/v2/sources?language=en&country=us".to_owned();
         let allowed_params = vec!["category", "language", "country"];
@@ -321,10 +321,7 @@ mod tests {
     #[test]
     fn language() {
         let mut api = NewsAPI::new("123".to_owned());
-        api.language("en");
-        assert_eq!(api.parameters.get("language"), Some(&"en".to_owned()));
-
-        api.language("noSuchOption");
+        api.language(constants::Language::English);
         assert_eq!(api.parameters.get("language"), Some(&"en".to_owned()));
     }
 
