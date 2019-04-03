@@ -22,7 +22,7 @@ impl NewsAPI {
     ///
     pub fn new(api_key: String) -> NewsAPI {
         NewsAPI {
-            api_key: api_key,
+            api_key,
             parameters: HashMap::new(),
             url: None,
         }
