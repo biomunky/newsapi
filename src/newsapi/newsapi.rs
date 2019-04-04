@@ -3,6 +3,7 @@ use crate::newsapi::error::NewsApiError;
 use crate::newsapi::payload::article::Articles;
 use crate::newsapi::payload::source::Sources;
 use chrono::prelude::*;
+use serde::de::DeserializeOwned;
 use std::collections::HashMap;
 
 use url::percent_encoding::{utf8_percent_encode, DEFAULT_ENCODE_SET};
@@ -45,36 +46,27 @@ impl NewsAPI {
         ];
 
         self.url = Some(self.build_url(allowed_params));
-        self.fetch_articles()
+        self.send()
     }
 
     /// Fetch the top headlines from the newaspi
     pub fn get_top_headlines(&mut self) -> Result<Articles, NewsApiError> {
         let allowed_params = vec!["q", "country", "category", "sources", "pageSize", "page"];
         self.url = Some(self.build_url(allowed_params));
-        self.fetch_articles()
-    }
-
-    fn fetch_articles(&self) -> Result<Articles, NewsApiError> {
-        if self.invalid_arguments_specified() {
-            return Err(NewsApiError::InvalidParameterCombinationError);
-        }
-
-        match &self.url {
-            Some(url) => {
-                let body = NewsAPI::fetch_resource(url, &self.api_key)?;
-                let articles: Articles = serde_json::from_str(&body)?;
-                Ok(articles)
-            }
-            None => Err(NewsApiError::UndefinedUrlError),
-        }
+        self.send()
     }
 
     /// Fetch sources from the newapi
     pub fn get_sources(&mut self) -> Result<Sources, NewsApiError> {
         let allowed_params = vec!["category", "language", "country"];
         self.url = Some(self.build_url(allowed_params));
+        self.send()
+    }
 
+    fn send<T>(&self) -> Result<T, NewsApiError>
+    where
+        T: DeserializeOwned,
+    {
         if self.invalid_arguments_specified() {
             return Err(NewsApiError::InvalidParameterCombinationError);
         }
@@ -82,8 +74,7 @@ impl NewsAPI {
         match &self.url {
             Some(url) => {
                 let body = NewsAPI::fetch_resource(url, &self.api_key)?;
-                let sources: Sources = serde_json::from_str(&body)?;
-                Ok(sources)
+                Ok(serde_json::from_str::<T>(&body)?)
             }
             None => Err(NewsApiError::UndefinedUrlError),
         }
