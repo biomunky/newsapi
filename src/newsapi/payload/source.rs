@@ -1,28 +1,39 @@
+use crate::newsapi::constants::Category;
 
-    status string
+#[derive(Serialize, Deserialize)]
+pub struct Sources {
+    status: String,
+    sources: Vec<Source>,
+}
 
-    If the request was successful or not. Options: ok, error. In the case of error a code and message property will be populated.
-    sources array[source]
+#[derive(Serialize, Deserialize)]
+pub struct Source {
+    id: String,
+    name: String,
+    description: String,
+    url: String,
+    category: Category,
+    language: String,
+    country: String,
+}
 
-    The results of the request.
-        id string
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use std::path::PathBuf;
 
-        The identifier of the news source. You can use this with our other endpoints.
-        name string
+    #[test]
+    fn deserialize() {
+        let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        d.push("resources/example_sources.json");
 
-        The name of the news source
-        description string
+        let contents =
+            fs::read_to_string(d.as_path()).expect("Something went wrong reading the file");
 
-        A description of the news source
-        url string
+        let sources: Sources = serde_json::from_str(&contents).unwrap();
 
-        The URL of the homepage.
-        category string
-
-        The type of news to expect from this news source.
-        language string
-
-        The language that this news source writes in.
-        country string
-
-        The country this news source is based in (and primarily writes about).
+        assert_eq!(sources.status, "ok");
+        assert_eq!(sources.sources.len(), 4);
+    }
+}

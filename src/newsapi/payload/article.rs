@@ -1,34 +1,56 @@
+#[derive(Serialize, Deserialize)]
+pub struct Articles {
+    status: String,
+    #[serde(rename = "totalResults")]
+    total_results: u64,
+    articles: Vec<Article>,
+}
 
-    status string
+#[derive(Serialize, Deserialize)]
+pub struct ArticleSource {
+    id: Option<String>,
+    name: String,
+}
 
-    If the request was successful or not. Options: ok, error. In the case of error a code and message property will be populated.
-    totalResults int
+#[derive(Serialize, Deserialize)]
+pub struct Article {
+    source: ArticleSource,
+    author: Option<String>,
+    title: String,
+    description: Option<String>,
+    url: String,
+    #[serde(rename = "urlToImage")]
+    url_to_image: Option<String>,
+    #[serde(rename = "publishedAt")]
+    published_at: String,
+    content: Option<String>,
+}
 
-    The total number of results available for your request.
-    articles array[article]
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use std::path::PathBuf;
 
-    The results of the request.
-        source object
+    fn load_file(filename: &str) -> String {
+        let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        d.push(filename);
+        fs::read_to_string(d.as_path()).expect("Something went wrong reading the file")
+    }
 
-        The identifier id and a display name name for the source this article came from.
-        author string
+    #[test]
+    fn deserialize_everything() {
+        let contents = load_file("resources/example_everything.json");
+        let articles: Articles = serde_json::from_str(&contents).unwrap();
+        assert_eq!(articles.status, "ok");
+        assert_eq!(articles.articles.len(), 2);
+    }
 
-        The author of the article
-        title string
-
-        The headline or title of the article.
-        description string
-
-        A description or snippet from the article.
-        url string
-
-        The direct URL to the article.
-        urlToImage string
-
-        The URL to a relevant image for the article.
-        publishedAt string
-
-        The date and time that the article was published, in UTC (+000)
-        content string
-
-        The unformatted content of the article, where available. This is truncated to 260 chars for Developer plan users.
+    #[test]
+    fn deserialize_headlines() {
+        let contents = load_file("resources/example_headlines.json");
+        let articles: Articles = serde_json::from_str(&contents).unwrap();
+        assert_eq!(articles.total_results, 2);
+        assert_eq!(articles.articles.len(), 2);
+    }
+}

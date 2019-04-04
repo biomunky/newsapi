@@ -99,17 +99,6 @@ lazy_static! {
     };
 }
 
-#[derive(Debug)]
-pub enum Category {
-    Business,
-    Entertainment,
-    General,
-    Health,
-    Science,
-    Sports,
-    Technology,
-}
-
 #[derive(Debug, Enum)]
 pub enum Country {
     Argentina,
@@ -186,4 +175,22 @@ pub enum Language {
     NorthernSami,
     Urdu,
     Chinese,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum Category {
+    #[serde(rename = "business")]
+    Business,
+    #[serde(rename = "entertainment")]
+    Entertainment,
+    #[serde(rename = "general")]
+    General,
+    #[serde(rename = "health")]
+    Health,
+    #[serde(rename = "science")]
+    Science,
+    #[serde(rename = "sports")]
+    Sports,
+    #[serde(rename = "technology")]
+    Technology,
 }
