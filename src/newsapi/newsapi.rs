@@ -1,15 +1,23 @@
 use super::constants;
 use crate::newsapi::error::NewsApiError;
+use crate::newsapi::payload::article::Articles;
+use crate::newsapi::payload::source::Sources;
 use chrono::prelude::*;
 use std::collections::HashMap;
 
 use url::percent_encoding::{utf8_percent_encode, DEFAULT_ENCODE_SET};
 
 #[derive(Debug)]
+enum ResourceType {
+    Article,
+    Source,
+}
+
+#[derive(Debug)]
 pub struct NewsAPI {
     api_key: String,
     parameters: HashMap<String, String>,
-    url: Option<String>,
+    url: Option<(String, ResourceType)>,
 }
 
 impl NewsAPI {
@@ -41,24 +49,23 @@ impl NewsAPI {
             "page",
         ];
 
-        self.url = Some(self.build_url(allowed_params));
+        self.url = Some((self.build_url(allowed_params), ResourceType::Article));
         self
     }
 
     pub fn get_top_headlines(&mut self) -> &mut NewsAPI {
         let allowed_params = vec!["q", "country", "category", "sources", "pageSize", "page"];
-        self.url = Some(self.build_url(allowed_params));
+        self.url = Some((self.build_url(allowed_params), ResourceType::Article));
         self
     }
 
     pub fn get_sources(&mut self) -> &mut NewsAPI {
         let allowed_params = vec!["category", "language", "country"];
-        self.url = Some(self.build_url(allowed_params));
+        self.url = Some((self.build_url(allowed_params), ResourceType::Source));
         self
     }
 
     fn build_url(&self, allowed_params: Vec<&str>) -> String {
-        // TODO: can probably replace this with a fold
         let mut params: Vec<String> = vec![];
         for field in allowed_params {
             if let Some(value) = self.parameters.get(field) {
@@ -77,24 +84,24 @@ impl NewsAPI {
         }
     }
 
+    fn invalid_arguments_specified(&self) -> bool {
+        (self.parameters.contains_key("country") || self.parameters.contains_key("category"))
+            && self.parameters.contains_key("sources")   
+    }
+
     ///
     /// Attempt to fetch the constructed resource
     ///
     pub fn send(&self) -> Result<String, NewsApiError> {
-        // TODO: validate all the parameters before firing off request //
-        if (self.parameters.contains_key("country") || self.parameters.contains_key("category"))
-            && self.parameters.contains_key("sources")
-        {
+        if self.invalid_arguments_specified() {
             return Err(NewsApiError::InvalidParameterCombinationError);
         }
 
-        match self
-            .url
-            .to_owned()
-            .map(|u| NewsAPI::fetch_resource(&u, &self.api_key))
-        {
-            Some(s) => s,
-            None => Err(NewsApiError::UndefinedUrlError),
+        match &self.url {
+            Some((url, resource_type)) => {
+                NewsAPI::fetch_resource(&url, &self.api_key, &resource_type)
+            },
+            None => Err(NewsApiError::UndefinedUrlError), 
         }
     }
 
@@ -123,14 +130,24 @@ impl NewsAPI {
         }
     }
 
-    fn fetch_resource(url: &str, api_key: &str) -> Result<String, NewsApiError> {
+    fn fetch_resource(url: &str, api_key: &str, resource_type: &ResourceType) -> Result<String, NewsApiError> {
         let client = reqwest::Client::new();
         let u = url.to_string();
 
         let mut resp = client.get(&u).header("X-Api-Key", api_key).send()?;
 
         if resp.status().is_success() {
-            Ok(resp.text()?)
+            let body = resp.text()?;
+            match resource_type {
+                ResourceType::Article => {
+                    let b: Articles = serde_json::from_str(&body)?;
+                    Ok(b)
+                    },
+                ResourceType::Source => {
+                    let b: Sources = serde_json::from_str(&body)?;
+                    Ok(b)
+                }
+            }
         } else {
             Err(NewsAPI::handle_api_error(
                 resp.status().as_u16(),
