@@ -8,16 +8,10 @@ use std::collections::HashMap;
 use url::percent_encoding::{utf8_percent_encode, DEFAULT_ENCODE_SET};
 
 #[derive(Debug)]
-enum ResourceType {
-    Article,
-    Source,
-}
-
-#[derive(Debug)]
 pub struct NewsAPI {
     api_key: String,
     parameters: HashMap<String, String>,
-    url: Option<(String, ResourceType)>,
+    url: Option<String>,
 }
 
 impl NewsAPI {
@@ -35,7 +29,8 @@ impl NewsAPI {
         }
     }
 
-    pub fn get_everything(&mut self) -> &mut NewsAPI {
+    /// Fetch everything that the newsapi can
+    pub fn get_everything(&mut self) -> Result<Articles, NewsApiError> {
         let allowed_params = vec![
             "q",
             "sources",
@@ -49,20 +44,49 @@ impl NewsAPI {
             "page",
         ];
 
-        self.url = Some((self.build_url(allowed_params), ResourceType::Article));
-        self
+        self.url = Some(self.build_url(allowed_params));
+        self.fetch_articles()
     }
 
-    pub fn get_top_headlines(&mut self) -> &mut NewsAPI {
+    /// Fetch the top headlines from the newaspi
+    pub fn get_top_headlines(&mut self) -> Result<Articles, NewsApiError> {
         let allowed_params = vec!["q", "country", "category", "sources", "pageSize", "page"];
-        self.url = Some((self.build_url(allowed_params), ResourceType::Article));
-        self
+        self.url = Some(self.build_url(allowed_params));
+        self.fetch_articles()
     }
 
-    pub fn get_sources(&mut self) -> &mut NewsAPI {
+    fn fetch_articles(&self) -> Result<Articles, NewsApiError> {
+        if self.invalid_arguments_specified() {
+            return Err(NewsApiError::InvalidParameterCombinationError);
+        }
+
+        match &self.url {
+            Some(url) => {
+                let body = NewsAPI::fetch_resource(url, &self.api_key)?;
+                let articles: Articles = serde_json::from_str(&body)?;
+                Ok(articles)
+            }
+            None => Err(NewsApiError::UndefinedUrlError),
+        }
+    }
+
+    /// Fetch sources from the newapi
+    pub fn get_sources(&mut self) -> Result<Sources, NewsApiError> {
         let allowed_params = vec!["category", "language", "country"];
-        self.url = Some((self.build_url(allowed_params), ResourceType::Source));
-        self
+        self.url = Some(self.build_url(allowed_params));
+
+        if self.invalid_arguments_specified() {
+            return Err(NewsApiError::InvalidParameterCombinationError);
+        }
+
+        match &self.url {
+            Some(url) => {
+                let body = NewsAPI::fetch_resource(url, &self.api_key)?;
+                let sources: Sources = serde_json::from_str(&body)?;
+                Ok(sources)
+            }
+            None => Err(NewsApiError::UndefinedUrlError),
+        }
     }
 
     fn build_url(&self, allowed_params: Vec<&str>) -> String {
@@ -86,23 +110,7 @@ impl NewsAPI {
 
     fn invalid_arguments_specified(&self) -> bool {
         (self.parameters.contains_key("country") || self.parameters.contains_key("category"))
-            && self.parameters.contains_key("sources")   
-    }
-
-    ///
-    /// Attempt to fetch the constructed resource
-    ///
-    pub fn send(&self) -> Result<String, NewsApiError> {
-        if self.invalid_arguments_specified() {
-            return Err(NewsApiError::InvalidParameterCombinationError);
-        }
-
-        match &self.url {
-            Some((url, resource_type)) => {
-                NewsAPI::fetch_resource(&url, &self.api_key, &resource_type)
-            },
-            None => Err(NewsApiError::UndefinedUrlError), 
-        }
+            && self.parameters.contains_key("sources")
     }
 
     fn handle_api_error(error_code: u16, error_string: String) -> NewsApiError {
@@ -130,24 +138,12 @@ impl NewsAPI {
         }
     }
 
-    fn fetch_resource(url: &str, api_key: &str, resource_type: &ResourceType) -> Result<String, NewsApiError> {
+    fn fetch_resource(url: &str, api_key: &str) -> Result<String, NewsApiError> {
         let client = reqwest::Client::new();
-        let u = url.to_string();
-
-        let mut resp = client.get(&u).header("X-Api-Key", api_key).send()?;
+        let mut resp = client.get(url).header("X-Api-Key", api_key).send()?;
 
         if resp.status().is_success() {
-            let body = resp.text()?;
-            match resource_type {
-                ResourceType::Article => {
-                    let b: Articles = serde_json::from_str(&body)?;
-                    Ok(b)
-                    },
-                ResourceType::Source => {
-                    let b: Sources = serde_json::from_str(&body)?;
-                    Ok(b)
-                }
-            }
+            Ok(resp.text()?)
         } else {
             Err(NewsAPI::handle_api_error(
                 resp.status().as_u16(),

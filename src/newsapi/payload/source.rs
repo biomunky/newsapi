@@ -1,12 +1,12 @@
 use crate::newsapi::constants::Category;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Sources {
     status: String,
     sources: Vec<Source>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Source {
     id: String,
     name: String,

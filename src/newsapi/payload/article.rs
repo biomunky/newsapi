@@ -1,4 +1,4 @@
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Articles {
     status: String,
     #[serde(rename = "totalResults")]
@@ -6,13 +6,13 @@ pub struct Articles {
     articles: Vec<Article>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ArticleSource {
     id: Option<String>,
     name: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Article {
     source: ArticleSource,
     author: Option<String>,

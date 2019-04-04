@@ -9,9 +9,7 @@ fn main() {
 
     my_api.language(Language::English);
 
-    my_api.get_sources();
-
-    let r = my_api.send();
+    let r = my_api.get_sources();
 
     println!("{:?}", r);
 }
