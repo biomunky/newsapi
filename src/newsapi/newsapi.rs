@@ -1,7 +1,5 @@
 use super::constants;
 use crate::newsapi::error::NewsApiError;
-use crate::newsapi::payload::article::Articles;
-use crate::newsapi::payload::source::Sources;
 use chrono::prelude::*;
 use serde::de::DeserializeOwned;
 use std::collections::HashMap;
@@ -30,8 +28,8 @@ impl NewsAPI {
         }
     }
 
-    /// Fetch everything that the newsapi can
-    pub fn get_everything(&mut self) -> Result<Articles, NewsApiError> {
+    /// Build the 'fetch everything' url
+    pub fn get_everything(&mut self) -> &mut NewsAPI {
         let allowed_params = vec![
             "q",
             "sources",
@@ -46,24 +44,25 @@ impl NewsAPI {
         ];
 
         self.url = Some(self.build_url(allowed_params));
-        self.send()
+        self
     }
 
-    /// Fetch the top headlines from the newaspi
-    pub fn get_top_headlines(&mut self) -> Result<Articles, NewsApiError> {
+    /// Build the 'top_headlines' url
+    pub fn get_top_headlines(&mut self) -> &mut NewsAPI {
         let allowed_params = vec!["q", "country", "category", "sources", "pageSize", "page"];
         self.url = Some(self.build_url(allowed_params));
-        self.send()
+        self
     }
 
-    /// Fetch sources from the newapi
-    pub fn get_sources(&mut self) -> Result<Sources, NewsApiError> {
+    /// Build the 'sources' url
+    pub fn get_sources(&mut self) -> &mut NewsAPI {
         let allowed_params = vec!["category", "language", "country"];
         self.url = Some(self.build_url(allowed_params));
-        self.send()
+        self
     }
 
-    fn send<T>(&self) -> Result<T, NewsApiError>
+    /// Send the constructed URL to the newsapi server
+    pub fn send<T>(&self) -> Result<T, NewsApiError>
     where
         T: DeserializeOwned,
     {
