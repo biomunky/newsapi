@@ -10,7 +10,7 @@ fn main() {
     let mut my_api = NewsAPI::new(key);
     let r = my_api
         .language(Language::English)
-        .get_sources()
+        .sources()
         .send::<Sources>();
 
     println!("{:?}", r)

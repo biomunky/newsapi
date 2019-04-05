@@ -1,28 +1,13 @@
 use enum_map::{enum_map, Enum, EnumMap};
 use lazy_static;
-use std::collections::HashSet;
-use std::iter::FromIterator;
 
-#[allow(dead_code)]
 pub const TOP_HEADLINES_URL: &str = "https://newsapi.org/v2/top-headlines";
 
-#[allow(dead_code)]
 pub const EVERYTHING_URL: &str = "https://newsapi.org/v2/everything";
 
-#[allow(dead_code)]
 pub const SOURCES_URL: &str = "https://newsapi.org/v2/sources";
 
 lazy_static! {
-    pub static ref LANGUAGES: HashSet<&'static str> = {
-        let options = vec![
-            "ar", "en", "cn", "de", "es", "fr", "he", "it", "nl", "no", "pt", "ru", "sv", "ud",
-        ];
-        HashSet::from_iter(options)
-    };
-    pub static ref SORT_METHOD: HashSet<&'static str> = {
-        let options = vec!["relevancy", "popularity", "publishedAt"];
-        HashSet::from_iter(options)
-    };
     pub static ref COUNTRY_LOOKUP: EnumMap<Country, &'static str> = enum_map! {
         Country::Argentina => "ar",
         Country::Australia => "au",
@@ -97,6 +82,19 @@ lazy_static! {
         Language::Urdu => "ud",
         Language::Chinese => "zh",
     };
+    pub static ref SORT_METHOD_LOOKUP: EnumMap<SortMethod, &'static str> = enum_map! {
+        SortMethod::Relevancy => "relevancy",
+        SortMethod::Popularity => "popularity",
+        SortMethod::PublishedAt => "publishedAt",
+    };
+
+}
+
+#[derive(Debug, Enum)]
+pub enum SortMethod {
+    Relevancy,
+    Popularity,
+    PublishedAt,
 }
 
 #[derive(Debug, Enum)]

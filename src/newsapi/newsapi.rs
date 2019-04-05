@@ -29,7 +29,7 @@ impl NewsAPI {
     }
 
     /// Build the 'fetch everything' url
-    pub fn get_everything(&mut self) -> &mut NewsAPI {
+    pub fn everything(&mut self) -> &mut NewsAPI {
         let allowed_params = vec![
             "q",
             "sources",
@@ -48,14 +48,14 @@ impl NewsAPI {
     }
 
     /// Build the 'top_headlines' url
-    pub fn get_top_headlines(&mut self) -> &mut NewsAPI {
+    pub fn top_headlines(&mut self) -> &mut NewsAPI {
         let allowed_params = vec!["q", "country", "category", "sources", "pageSize", "page"];
         self.url = Some(self.build_url(allowed_params));
         self
     }
 
     /// Build the 'sources' url
-    pub fn get_sources(&mut self) -> &mut NewsAPI {
+    pub fn sources(&mut self) -> &mut NewsAPI {
         let allowed_params = vec!["category", "language", "country"];
         self.url = Some(self.build_url(allowed_params));
         self
@@ -193,7 +193,7 @@ impl NewsAPI {
     /// Use the /sources endpoint to locate these programmatically or look at the sources index.
     /// Note: you can't mix this param with the country or category params.
     /// This will be checked before calling the API but you can still get rekt!
-    pub fn sources(&mut self, sources: String) -> &mut NewsAPI {
+    pub fn with_sources(&mut self, sources: String) -> &mut NewsAPI {
         self.parameters.insert("sources".to_owned(), sources);
         self
     }
@@ -204,7 +204,6 @@ impl NewsAPI {
     /// * Prepend words or phrases that must appear with a + symbol. Eg: +bitcoin
     /// * Prepend words that must not appear with a - symbol. Eg: -bitcoin
     /// * Alternatively you can use the AND / OR / NOT keywords, and optionally group these with parenthesis. Eg: crypto AND (ethereum OR litecoin) NOT bitcoin
-
     pub fn query(&mut self, query: String) -> &mut NewsAPI {
         self.parameters.insert(
             "q".to_owned(),
@@ -234,11 +233,11 @@ impl NewsAPI {
         self
     }
 
-    pub fn sort_by(&mut self, sort_by: &str) -> &mut NewsAPI {
-        if constants::SORT_METHOD.contains(&*sort_by) {
-            self.parameters
-                .insert("sort_by".to_owned(), sort_by.to_string());
-        }
+    pub fn sort_by(&mut self, sort_by: constants::SortMethod) -> &mut NewsAPI {
+        self.parameters.insert(
+            "sort_by".to_owned(),
+            constants::SORT_METHOD_LOOKUP[sort_by].to_string(),
+        );
         self
     }
 }
