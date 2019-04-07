@@ -1,16 +1,12 @@
 [package]
 name = "newsapi"
 version = "0.1.0"
-authors = ["biomunky <biomunky@gmail.com>"]
+authors = ["biomunky", "lotia"]
 edition = "2018"
 
-[lib]   
+[lib]
 name="newsapi"
 path="src/lib.rs"
-
-[[bin]]
-name = "newsbin"
-path = "src/bin.rs"
 
 [dependencies]
 lazy_static = "1.3"
