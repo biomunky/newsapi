@@ -144,33 +144,40 @@ impl NewsAPI {
 
     /// A date and optional time for the oldest article allowed
     pub fn from(&mut self, from: DateTime<Utc>) -> &mut NewsAPI {
-        self.parameters.insert(
-            "from".to_owned(),
-            from.format("%Y-%m-%dT%H:%M:%S").to_string(),
-        );
+        self.chronological_specification("from", from);
         self
     }
 
-    /// A date and optional time for the newest article allowed
+    /// A date and optional time for the newest article allowed.
     pub fn to(&mut self, to: DateTime<Utc>) -> &mut NewsAPI {
-        self.parameters
-            .insert("to".to_owned(), to.format("%Y-%m-%dT%H:%M:%S").to_string());
+        self.chronological_specification("to", to);
         self
     }
 
-    ///  A comma-seperated string of domains
-    /// (eg bbc.co.uk, techcrunch.com, engadget.com) to restrict the search to.
+    fn chronological_specification(&mut self, operation: &str, dt_val: DateTime<Utc>) -> &mut NewsAPI {
+        let dt_format = "%Y-%m-%dT%H:%M:%S";
+        self.parameters.insert(operation.to_owned(), dt_val.format(dt_format).to_string());
+        self
+    }
+
+    ///  The domains
+    /// (e.g. bbc.co.uk, techcrunch.com, engadget.com) to which search will be restricted.
     pub fn domains(&mut self, domains: Vec<&str>) -> &mut NewsAPI {
-        self.parameters
-            .insert("domains".to_owned(), domains.join(","));
+        self.manage_domains("domains", domains);
         self
     }
 
-    /// A comma-seperated string of domains
-    /// (eg bbc.co.uk, techcrunch.com, engadget.com) to remove from the results.
+    /// The domains
+    /// (e.g. bbc.co.uk, techcrunch.com, engadget.com) from which no stories will be present in the
+    /// results.
     pub fn exclude_domains(&mut self, domains: Vec<&str>) -> &mut NewsAPI {
+        self.manage_domains("excludeDomains", domains);
+        self
+    }
+
+    fn manage_domains(&mut self, operation: &str, domains: Vec<&str>) -> &mut NewsAPI {
         self.parameters
-            .insert("excludeDomains".to_owned(), domains.join(","));
+            .insert(operation.to_owned(), domains.join(","));
         self
     }
 
@@ -203,7 +210,8 @@ impl NewsAPI {
     /// * Surround phrases with quotes (") for exact match.
     /// * Prepend words or phrases that must appear with a + symbol. Eg: +bitcoin
     /// * Prepend words that must not appear with a - symbol. Eg: -bitcoin
-    /// * Alternatively you can use the AND / OR / NOT keywords, and optionally group these with parenthesis. Eg: crypto AND (ethereum OR litecoin) NOT bitcoin
+    /// * Alternatively you can use the AND / OR / NOT keywords, and optionally group these with parenthesis.
+    ///   e.g.: crypto AND (ethereum OR litecoin) NOT bitcoin
     pub fn query(&mut self, query: String) -> &mut NewsAPI {
         self.parameters.insert(
             "q".to_owned(),
