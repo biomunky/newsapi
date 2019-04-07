@@ -1,6 +1,7 @@
 use super::constants;
 use crate::newsapi::error::NewsApiError;
 use chrono::prelude::*;
+use serde::de::DeserializeOwned;
 use std::collections::HashMap;
 
 use url::percent_encoding::{utf8_percent_encode, DEFAULT_ENCODE_SET};
@@ -27,7 +28,8 @@ impl NewsAPI {
         }
     }
 
-    pub fn get_everything(&mut self) -> &mut NewsAPI {
+    /// Build the 'fetch everything' url
+    pub fn everything(&mut self) -> &mut NewsAPI {
         let allowed_params = vec![
             "q",
             "sources",
@@ -45,20 +47,39 @@ impl NewsAPI {
         self
     }
 
-    pub fn get_top_headlines(&mut self) -> &mut NewsAPI {
+    /// Build the 'top_headlines' url
+    pub fn top_headlines(&mut self) -> &mut NewsAPI {
         let allowed_params = vec!["q", "country", "category", "sources", "pageSize", "page"];
         self.url = Some(self.build_url(allowed_params));
         self
     }
 
-    pub fn get_sources(&mut self) -> &mut NewsAPI {
+    /// Build the 'sources' url
+    pub fn sources(&mut self) -> &mut NewsAPI {
         let allowed_params = vec!["category", "language", "country"];
         self.url = Some(self.build_url(allowed_params));
         self
     }
 
+    /// Send the constructed URL to the newsapi server
+    pub fn send<T>(&self) -> Result<T, NewsApiError>
+    where
+        T: DeserializeOwned,
+    {
+        if self.invalid_arguments_specified() {
+            return Err(NewsApiError::InvalidParameterCombinationError);
+        }
+
+        match &self.url {
+            Some(url) => {
+                let body = NewsAPI::fetch_resource(url, &self.api_key)?;
+                Ok(serde_json::from_str::<T>(&body)?)
+            }
+            None => Err(NewsApiError::UndefinedUrlError),
+        }
+    }
+
     fn build_url(&self, allowed_params: Vec<&str>) -> String {
-        // TODO: can probably replace this with a fold
         let mut params: Vec<String> = vec![];
         for field in allowed_params {
             if let Some(value) = self.parameters.get(field) {
@@ -77,25 +98,9 @@ impl NewsAPI {
         }
     }
 
-    ///
-    /// Attempt to fetch the constructed resource
-    ///
-    pub fn send(&self) -> Result<String, NewsApiError> {
-        // TODO: validate all the parameters before firing off request //
-        if (self.parameters.contains_key("country") || self.parameters.contains_key("category"))
+    fn invalid_arguments_specified(&self) -> bool {
+        (self.parameters.contains_key("country") || self.parameters.contains_key("category"))
             && self.parameters.contains_key("sources")
-        {
-            return Err(NewsApiError::InvalidParameterCombinationError);
-        }
-
-        match self
-            .url
-            .to_owned()
-            .map(|u| NewsAPI::fetch_resource(&u, &self.api_key))
-        {
-            Some(s) => s,
-            None => Err(NewsApiError::UndefinedUrlError),
-        }
     }
 
     fn handle_api_error(error_code: u16, error_string: String) -> NewsApiError {
@@ -125,9 +130,7 @@ impl NewsAPI {
 
     fn fetch_resource(url: &str, api_key: &str) -> Result<String, NewsApiError> {
         let client = reqwest::Client::new();
-        let u = url.to_string();
-
-        let mut resp = client.get(&u).header("X-Api-Key", api_key).send()?;
+        let mut resp = client.get(url).header("X-Api-Key", api_key).send()?;
 
         if resp.status().is_success() {
             Ok(resp.text()?)
@@ -190,7 +193,7 @@ impl NewsAPI {
     /// Use the /sources endpoint to locate these programmatically or look at the sources index.
     /// Note: you can't mix this param with the country or category params.
     /// This will be checked before calling the API but you can still get rekt!
-    pub fn sources(&mut self, sources: String) -> &mut NewsAPI {
+    pub fn with_sources(&mut self, sources: String) -> &mut NewsAPI {
         self.parameters.insert("sources".to_owned(), sources);
         self
     }
@@ -201,7 +204,6 @@ impl NewsAPI {
     /// * Prepend words or phrases that must appear with a + symbol. Eg: +bitcoin
     /// * Prepend words that must not appear with a - symbol. Eg: -bitcoin
     /// * Alternatively you can use the AND / OR / NOT keywords, and optionally group these with parenthesis. Eg: crypto AND (ethereum OR litecoin) NOT bitcoin
-
     pub fn query(&mut self, query: String) -> &mut NewsAPI {
         self.parameters.insert(
             "q".to_owned(),
@@ -231,11 +233,11 @@ impl NewsAPI {
         self
     }
 
-    pub fn sort_by(&mut self, sort_by: &str) -> &mut NewsAPI {
-        if constants::SORT_METHOD.contains(&*sort_by) {
-            self.parameters
-                .insert("sort_by".to_owned(), sort_by.to_string());
-        }
+    pub fn sort_by(&mut self, sort_by: constants::SortMethod) -> &mut NewsAPI {
+        self.parameters.insert(
+            "sort_by".to_owned(),
+            constants::SORT_METHOD_LOOKUP[sort_by].to_string(),
+        );
         self
     }
 }

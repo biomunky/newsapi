@@ -9,4 +9,5 @@ custom_error! { pub NewsApiError
     TooManyRequests{code: u16, message: String} = "TooManyRequests: {code} => {message}",
     ServerError{code: u16, message: String} = "ServerError: {code} => {message}",
     ReqwestError{source: reqwest::Error} = "Reqwest Failure!",
+    SerdeError{source: serde_json::error::Error} = "Unable to deserialize payload",
 }
