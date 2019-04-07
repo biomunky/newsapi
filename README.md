@@ -54,9 +54,19 @@ General Structure
 }
 ```
 
-## Structures
+### Examples
+As described in [The Cargo Book](https://doc.rust-lang.org/cargo/guide/project-layout.html) the project has some simple examples in examples/. These can be run via cargo after you've exported you NEWSAPI_KEY
 
-* source
-* article -> source + author, title, url, urlToImage, publishedAt, content
-* articles -> collection of Article
-* request -> articles + status & totalResults
+```
+export NEWSAPI_KEY=5h79off128957edb3179y5da1nb36y9e
+```
+
+To list all examples:
+```
+cargo run --example
+```
+
+to run a specific example
+```
+cargo run --example get_sources
+```
