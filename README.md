@@ -50,3 +50,8 @@ cargo run --example get_sources
 ## License
 
 Licensed under MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
+
+## Disclaimer
+
+We have no affiliation with the [News API](https://github.com/News-API-gh) team.
