@@ -3,6 +3,12 @@ name = "newsapi"
 version = "0.1.0"
 authors = ["biomunky", "lotia"]
 edition = "2018"
+homepage = "https://github.com/biomunky/newsapi"
+description = "Wrapper for the newsapi, uses reqwest to do the http work. A learn by doing project"
+keywords = ["newsapi", "client"]
+license = "MIT/Apache-2.0"
+readme = "README.md"
+categories = ["api-bindings"]
 
 [lib]
 name="newsapi"
