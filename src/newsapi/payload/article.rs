@@ -47,13 +47,12 @@ mod tests {
     fn load_file(filename: &str) -> String {
         let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         d.push(filename);
-        fs::read_to_string(d.as_path()).expect("Something went wrong reading the file")
+        fs::read_to_string(d.as_path()).unwrap_or_else(|_| format!("Unable to read {}", filename))
     }
 
     fn read_articles(filename: &str) -> Articles {
         let contents = load_file(filename);
-        let articles: Articles = serde_json::from_str(&contents).unwrap();
-        articles
+        serde_json::from_str(&contents).unwrap()
     }
 
     #[test]
