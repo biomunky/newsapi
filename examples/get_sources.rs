@@ -1,5 +1,5 @@
-use newsapi::newsapi::constants::Language;
 use newsapi::newsapi::api::Client;
+use newsapi::newsapi::constants::Language;
 use newsapi::newsapi::payload::source::Sources;
 
 use std::env;

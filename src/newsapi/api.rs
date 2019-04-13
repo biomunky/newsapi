@@ -154,9 +154,14 @@ impl Client {
         self
     }
 
-    fn chronological_specification(&mut self, operation: &str, dt_val: DateTime<Utc>) -> &mut Client {
+    fn chronological_specification(
+        &mut self,
+        operation: &str,
+        dt_val: DateTime<Utc>,
+    ) -> &mut Client {
         let dt_format = "%Y-%m-%dT%H:%M:%S";
-        self.parameters.insert(operation.to_owned(), dt_val.format(dt_format).to_string());
+        self.parameters
+            .insert(operation.to_owned(), dt_val.format(dt_format).to_string());
         self
     }
 
