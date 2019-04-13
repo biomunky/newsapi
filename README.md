@@ -29,7 +29,7 @@ There are three endpoints
 
 Top Headlines and Everything endpoints are wrapped by an Article struct and Sources by a Source struct. Both currently provide limited functionality.
 
-### Examples
+## Examples
 As described in [The Cargo Book](https://doc.rust-lang.org/cargo/guide/project-layout.html) the project has some simple examples in examples/. These can be run via cargo after you've exported you NEWSAPI_KEY
 
 ```
