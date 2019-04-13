@@ -21,13 +21,13 @@ See [here for pricing](https://newsapi.org/pricing)
 
 ## Notes
 
-Three endpoints
+### Three endpoints
 
 1. [Top Headlines](https://newsapi.org/docs/endpoints/top-headlines)
 2. [Everything](https://newsapi.org/docs/endpoints/everything)
 3. [Sources](https://newsapi.org/docs/endpoints/sources)
 
-General Structure
+### General Structure
 
 ```json
 {
@@ -54,7 +54,7 @@ General Structure
 }
 ```
 
-### Examples
+## Examples
 As described in [The Cargo Book](https://doc.rust-lang.org/cargo/guide/project-layout.html) the project has some simple examples in examples/. These can be run via cargo after you've exported you NEWSAPI_KEY
 
 ```
