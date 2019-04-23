@@ -43,21 +43,21 @@ impl Client {
             "page",
         ];
 
-        self.url = Some(self.build_url(allowed_params));
+        self.url = Some(self.build_url(constants::EVERYTHING_URL, allowed_params));
         self
     }
 
     /// Build the 'top_headlines' url
     pub fn top_headlines(&mut self) -> &mut Client {
         let allowed_params = vec!["q", "country", "category", "sources", "pageSize", "page"];
-        self.url = Some(self.build_url(allowed_params));
+        self.url = Some(self.build_url(constants::TOP_HEADLINES_URL, allowed_params));
         self
     }
 
     /// Build the 'sources' url
     pub fn sources(&mut self) -> &mut Client {
         let allowed_params = vec!["category", "language", "country"];
-        self.url = Some(self.build_url(allowed_params));
+        self.url = Some(self.build_url(constants::SOURCES_URL, allowed_params));
         self
     }
 
@@ -79,7 +79,7 @@ impl Client {
         }
     }
 
-    fn build_url(&self, allowed_params: Vec<&str>) -> String {
+    fn build_url(&self, base_url: &str, allowed_params: Vec<&str>) -> String {
         let mut params: Vec<String> = vec![];
         for field in allowed_params {
             if let Some(value) = self.parameters.get(field) {
@@ -87,14 +87,14 @@ impl Client {
             }
         }
 
-        let mut sources_url = constants::SOURCES_URL.to_owned();
+        let mut url = base_url.to_owned();
 
         if params.is_empty() {
-            sources_url
+            url
         } else {
-            sources_url.push_str("?");
-            sources_url.push_str(&params.join("&"));
-            sources_url
+            url.push_str("?");
+            url.push_str(&params.join("&"));
+            url
         }
     }
 
@@ -143,13 +143,13 @@ impl Client {
     }
 
     /// A date and optional time for the oldest article allowed
-    pub fn from(&mut self, from: DateTime<Utc>) -> &mut Client {
+    pub fn from(&mut self, from: &DateTime<Utc>) -> &mut Client {
         self.chronological_specification("from", from);
         self
     }
 
     /// A date and optional time for the newest article allowed.
-    pub fn to(&mut self, to: DateTime<Utc>) -> &mut Client {
+    pub fn to(&mut self, to: &DateTime<Utc>) -> &mut Client {
         self.chronological_specification("to", to);
         self
     }
@@ -157,7 +157,7 @@ impl Client {
     fn chronological_specification(
         &mut self,
         operation: &str,
-        dt_val: DateTime<Utc>,
+        dt_val: &DateTime<Utc>,
     ) -> &mut Client {
         let dt_format = "%Y-%m-%dT%H:%M:%S";
         self.parameters
@@ -217,7 +217,7 @@ impl Client {
     /// * Prepend words that must not appear with a - symbol. Eg: -bitcoin
     /// * Alternatively you can use the AND / OR / NOT keywords, and optionally group these with parenthesis.
     ///   e.g.: crypto AND (ethereum OR litecoin) NOT bitcoin
-    pub fn query(&mut self, query: String) -> &mut Client {
+    pub fn query(&mut self, query: &str) -> &mut Client {
         self.parameters.insert(
             "q".to_owned(),
             utf8_percent_encode(&query, DEFAULT_ENCODE_SET).to_string(),
@@ -275,7 +275,7 @@ mod tests {
     #[test]
     fn query() {
         let mut api = Client::new("123".to_owned());
-        api.query("Ali loves the hoff NOT Baywatch".to_owned());
+        api.query("Ali loves the hoff NOT Baywatch");
         let encoded_param = api.parameters.get("q");
         assert_eq!(
             encoded_param,
