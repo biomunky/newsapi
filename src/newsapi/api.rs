@@ -290,7 +290,7 @@ mod tests {
         api.country(constants::Country::UnitedStatesofAmerica);
         let expected = "https://newsapi.org/v2/sources?language=en&country=us".to_owned();
         let allowed_params = vec!["category", "language", "country"];
-        let url = api.build_url(allowed_params);
+        let url = api.build_url(constants::SOURCES_URL, allowed_params);
         assert_eq!(expected, url);
     }
 
@@ -346,7 +346,7 @@ mod tests {
         let from = Utc.ymd(2019, 7, 8).and_hms(9, 10, 11);
         let to = Utc.ymd(2019, 7, 9).and_hms(9, 10, 11);
 
-        api.to(to).from(from);
+        api.to(&to).from(&from);
 
         assert_eq!(
             api.parameters.get("from"),
