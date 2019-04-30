@@ -20,7 +20,6 @@ fn main() {
 
     c
         // Search German news sources for articles
-        .sort_by(SortMethod::Popularity)
         .language(Language::German)
         // in the last ten days containing Trump and America
         .from(&start_timestamp)
@@ -29,10 +28,12 @@ fn main() {
         .query("Trump America")
         // if they are in the 'general' category
         .category(Category::General)
+        // Sort by the most popular articles
+        .sort_by(SortMethod::Popularity)
         // get articles from the everything end point - this builds the url
         .everything();
 
-    // print a debug of the current client status
+    // debug print the current client status - you can see the URL that will be sent to the API
     println!("{:?}", c);
 
     // fire off a request to the endpoint and deserialize the results into an Article struct
