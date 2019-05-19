@@ -1,5 +1,5 @@
 use super::constants;
-use crate::newsapi::error::NewsApiError;
+use super::error::NewsApiError;
 use chrono::prelude::*;
 use serde::de::DeserializeOwned;
 use std::collections::HashMap;

@@ -1,9 +1,9 @@
 extern crate time;
 
 use chrono::prelude::*;
-use newsapi::newsapi::api::Client;
-use newsapi::newsapi::constants::{Category, Language, SortMethod};
-use newsapi::newsapi::payload::article::Articles;
+use newsapi::api::Client;
+use newsapi::constants::{Category, Language, SortMethod};
+use newsapi::payload::article::Articles;
 
 use time::Duration;
 

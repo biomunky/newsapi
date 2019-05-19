@@ -1,4 +1,4 @@
-use crate::newsapi::constants::Category;
+use crate::constants::Category;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Sources {
