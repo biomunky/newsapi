@@ -37,8 +37,12 @@ fn main() {
     println!("{:?}", c);
 
     // fire off a request to the endpoint and deserialize the results into an Article struct
-    let articles = c.send::<Articles>();
+    let articles = c.send::<Articles>().unwrap();
 
     // print the results to the terminal
     println!("{:?}", articles);
+
+    // access article status
+    let status = articles.status;
+    println!("{}", status);
 }

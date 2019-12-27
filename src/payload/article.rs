@@ -1,9 +1,9 @@
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Articles {
-    status: String,
+    pub status: String,
     #[serde(rename = "totalResults")]
-    total_results: usize,
-    articles: Vec<Article>,
+    pub total_results: usize,
+    pub articles: Vec<Article>,
 }
 
 impl Articles {
@@ -14,8 +14,8 @@ impl Articles {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ArticleSource {
-    id: Option<String>,
-    name: String,
+    pub id: Option<String>,
+    pub name: String,
 }
 
 impl PartialEq for ArticleSource {
@@ -26,16 +26,16 @@ impl PartialEq for ArticleSource {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Article {
-    source: ArticleSource,
-    author: Option<String>,
-    title: String,
-    description: Option<String>,
-    url: String,
+    pub source: ArticleSource,
+    pub author: Option<String>,
+    pub title: String,
+    pub description: Option<String>,
+    pub url: String,
     #[serde(rename = "urlToImage")]
-    url_to_image: Option<String>,
+    pub url_to_image: Option<String>,
     #[serde(rename = "publishedAt")]
-    published_at: String,
-    content: Option<String>,
+    pub published_at: String,
+    pub content: Option<String>,
 }
 
 #[cfg(test)]

@@ -2,19 +2,19 @@ use crate::constants::Category;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Sources {
-    status: String,
-    sources: Vec<Source>,
+    pub status: String,
+    pub sources: Vec<Source>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Source {
-    id: String,
-    name: String,
-    description: String,
-    url: String,
-    category: Category,
-    language: String,
-    country: String,
+    pub id: String,
+    pub name: String,
+    pub description: String,
+    pub url: String,
+    pub category: Category,
+    pub language: String,
+    pub country: String,
 }
 
 #[cfg(test)]
