@@ -4,7 +4,7 @@ use chrono::prelude::*;
 use serde::de::DeserializeOwned;
 use std::collections::HashMap;
 
-use url::percent_encoding::{utf8_percent_encode, DEFAULT_ENCODE_SET};
+use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
 
 #[derive(Debug)]
 pub struct Client {
@@ -220,7 +220,7 @@ impl Client {
     pub fn query(&mut self, query: &str) -> &mut Client {
         self.parameters.insert(
             "q".to_owned(),
-            utf8_percent_encode(&query, DEFAULT_ENCODE_SET).to_string(),
+            utf8_percent_encode(&query, NON_ALPHANUMERIC).to_string(),
         );
         self
     }
