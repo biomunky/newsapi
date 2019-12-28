@@ -1,21 +1,29 @@
-# The News API
+# The News API Rust Library
+
+[![Build Status](https://github.com/biomunky/newsapi/workflows/CI/badge.svg)](https://github.com/biomunky/newsapi/actions?query=workflow%3ACI)
+
+- [The News API Rust Library](#the-news-api-rust-library)
+  - [Notes](#notes)
+  - [Examples](#examples)
+  - [License](#license)
+  - [Disclaimer](#disclaimer)
 
 [The News API](https://newsapi.org/) allows you to get breaking news headlines, and search for articles from over 30,000 news sources and blogs.
 
 All you need is an API key to
 
-* Search live top headlines or search all articles
-* New articles available with 15 minute delay
-* And Search articles up to a month old
-* Get short article snippet or descriptions
+- Search live top headlines or search all articles
+- New articles available with 15 minute delay
+- And Search articles up to a month old
+- Get short article snippet or descriptions
 
 The following limits apply
 
-* 1,000 requests per day
-* No extra requests available
-* No uptime SLA
-* Basic support
-* NewsAPI.org attribution required
+- 1,000 requests per day
+- No extra requests available
+- No uptime SLA
+- Basic support
+- NewsAPI.org attribution required
 
 See [here for pricing](https://newsapi.org/pricing)
 
@@ -30,27 +38,26 @@ There are three endpoints
 Top Headlines and Everything endpoints are wrapped by an Article struct and Sources by a Source struct. Both currently provide limited functionality.
 
 ## Examples
+
 As described in [The Cargo Book](https://doc.rust-lang.org/cargo/guide/project-layout.html) the project has some simple examples in examples/. These can be run via cargo after you've exported your NEWSAPI_KEY
 
-```
+```shell
 export NEWSAPI_KEY=5h79off128957edb3179y5da1nb36y9e
 ```
 
 To list all examples:
-```
+```shell
 cargo run --example
 ```
 
 to run a specific example
-```
+```shell
 cargo run --example get_sources
 ```
-
 
 ## License
 
 Licensed under MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
-
 
 ## Disclaimer
 
