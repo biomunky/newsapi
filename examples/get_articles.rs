@@ -1,18 +1,15 @@
-extern crate time;
-
 use chrono::prelude::*;
 use newsapi::api::Client;
 use newsapi::constants::{Category, Language, SortMethod};
 use newsapi::payload::article::Articles;
-
-use time::Duration;
-
 use std::env;
 
 fn main() {
     let key = env::var("NEWSAPI_KEY").unwrap();
 
-    let start_timestamp = Utc::now() - Duration::days(10);
+    let start_timestamp = Utc::now()
+        .checked_sub_signed(chrono::Duration::days(10))
+        .unwrap();
     let end_timestamp = Utc::now();
 
     // create a client
