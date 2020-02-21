@@ -1,11 +1,8 @@
-extern crate time;
-
 use chrono::prelude::*;
+use chrono::Duration;
 use newsapi::api::Client;
 use newsapi::constants::{Category, Language, SortMethod};
 use newsapi::payload::article::Articles;
-
-use time::Duration;
 
 use std::env;
 

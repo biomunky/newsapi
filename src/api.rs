@@ -129,8 +129,19 @@ impl Client {
     }
 
     fn fetch_resource(url: &str, api_key: &str) -> Result<String, NewsApiError> {
-        let client = reqwest::Client::new();
-        let mut resp = client.get(url).header("X-Api-Key", api_key).send()?;
+        static CLIENT_USER_AGENT: &str = concat!(
+            "rust-",
+            env!("CARGO_PKG_NAME"),
+            "/",
+            env!("CARGO_PKG_VERSION"),
+        );
+
+        // TODO: create a client that can be reused
+        let client = reqwest::blocking::Client::builder()
+            .user_agent(CLIENT_USER_AGENT)
+            .build()?;
+
+        let resp = client.get(url).header("X-Api-Key", api_key).send()?;
 
         if resp.status().is_success() {
             Ok(resp.text()?)
