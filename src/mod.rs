@@ -1,2 +1,1 @@
-extern crate reqwest;
-extern crate url;
+use url;
