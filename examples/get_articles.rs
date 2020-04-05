@@ -1,9 +1,9 @@
 use chrono::prelude::*;
 use chrono::Duration;
+use futures::executor;
 use newsapi::api::Client;
 use newsapi::constants::{Category, Language, SortMethod};
 use newsapi::payload::article::Articles;
-use futures::executor;
 
 use std::env;
 

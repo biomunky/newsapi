@@ -2,8 +2,8 @@ use newsapi::api::Client;
 use newsapi::constants::Language;
 use newsapi::payload::source::Sources;
 
-use std::env;
 use futures::executor;
+use std::env;
 
 fn main() {
     let key = env::var("NEWSAPI_KEY").unwrap();
@@ -13,7 +13,7 @@ fn main() {
         Client::new(key)
             .language(Language::English)
             .sources()
-            .send::<Sources>()
+            .send::<Sources>(),
     );
 
     println!("{:?}", sources)
