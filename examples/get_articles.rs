@@ -3,6 +3,7 @@ use chrono::Duration;
 use newsapi::api::Client;
 use newsapi::constants::{Category, Language, SortMethod};
 use newsapi::payload::article::Articles;
+use futures::executor;
 
 use std::env;
 
@@ -34,7 +35,7 @@ fn main() {
     println!("{:?}", c);
 
     // fire off a request to the endpoint and deserialize the results into an Article struct
-    let articles = c.send::<Articles>().unwrap();
+    let articles = executor::block_on(c.send::<Articles>()).unwrap();
 
     // print the results to the terminal
     println!("{:?}", articles);
