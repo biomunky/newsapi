@@ -79,6 +79,24 @@ impl Client {
         }
     }
 
+    /// Send the constructed URL to the newsapi server
+    pub fn send_sync<T>(&self) -> Result<T, NewsApiError>
+    where
+        T: DeserializeOwned,
+    {
+        if self.invalid_arguments_specified() {
+            return Err(NewsApiError::InvalidParameterCombinationError);
+        }
+
+        match &self.url {
+            Some(url) => {
+                let body = Client::fetch_resource_sync(url, &self.api_key)?;
+                Ok(serde_json::from_str::<T>(&body)?)
+            }
+            None => Err(NewsApiError::UndefinedUrlError),
+        }
+    }
+
     fn build_url(&self, base_url: &str, allowed_params: Vec<&str>) -> String {
         let mut params: Vec<String> = vec![];
         for field in allowed_params {
@@ -149,6 +167,31 @@ impl Client {
             Err(Client::handle_api_error(
                 resp.status().as_u16(),
                 resp.text().await?,
+            ))
+        }
+    }
+
+    fn fetch_resource_sync(url: &str, api_key: &str) -> Result<String, NewsApiError> {
+        static CLIENT_USER_AGENT: &str = concat!(
+            "rust-",
+            env!("CARGO_PKG_NAME"),
+            "/",
+            env!("CARGO_PKG_VERSION"),
+        );
+
+        // TODO: create a client that can be reused
+        let client = reqwest::blocking::Client::builder()
+            .user_agent(CLIENT_USER_AGENT)
+            .build()?;
+
+        let resp = client.get(url).header("X-Api-Key", api_key).send()?;
+
+        if resp.status().is_success() {
+            Ok(resp.text()?)
+        } else {
+            Err(Client::handle_api_error(
+                resp.status().as_u16(),
+                resp.text()?,
             ))
         }
     }

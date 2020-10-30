@@ -6,8 +6,7 @@ use newsapi::payload::article::Articles;
 
 use std::env;
 
-#[tokio::main]
-async fn main() {
+fn main() {
     let key = env::var("NEWSAPI_KEY").unwrap();
 
     let start_timestamp = Utc::now() - Duration::days(10);
@@ -35,7 +34,7 @@ async fn main() {
     println!("{:?}", c);
 
     // fire off a request to the endpoint and deserialize the results into an Article struct
-    let articles = c.send::<Articles>().await.unwrap();
+    let articles = c.send_sync::<Articles>().unwrap();
 
     // print the results to the terminal
     println!("{:?}", articles);
