@@ -35,7 +35,7 @@ async fn main() {
     println!("{:?}", c);
 
     // fire off a request to the endpoint and deserialize the results into an Article struct
-    let articles = c.send::<Articles>().await.unwrap();
+    let articles = c.send_async::<Articles>().await.unwrap();
 
     // print the results to the terminal
     println!("{:?}", articles);

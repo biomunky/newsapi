@@ -1,28 +1,28 @@
 [package]
-name = "newsapi"
-version = "0.3.1"
 authors = ["biomunky", "lotia"]
+categories = ["api-bindings"]
+description = "Wrapper for the newsapi, uses reqwest to do the http work. A learn by doing project"
 edition = "2018"
 homepage = "https://github.com/biomunky/newsapi"
-description = "Wrapper for the newsapi, uses reqwest to do the http work. A learn by doing project"
 keywords = ["newsapi", "client"]
 license = "MIT/Apache-2.0"
+name = "newsapi"
 readme = "README.md"
-categories = ["api-bindings"]
+version = "0.4.0"
 
 [lib]
-name="newsapi"
-path="src/lib.rs"
+name = "newsapi"
+path = "src/lib.rs"
 
 [dependencies]
-chrono = { version = "0.4", features = ["serde"] }
-custom_error = "1.7.1"
-enum-map = "0.6.2"
+chrono = {version = "0.4", features = ["serde"]}
+custom_error = "1.8"
+enum-map = "0.6"
 lazy_static = "1.4"
-percent-encoding = "2.1.0"
-reqwest = { version = "0.10", features = ["blocking", "json"] }
+percent-encoding = "2.1"
+reqwest = {version = "0.10", features = ["blocking", "json"]}
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
-tokio = { version = "0.2", features = ["full"] }
-url = "2.1"
+tokio = {version = "0.2", features = ["full"]}
+url = "2.2"
