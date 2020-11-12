@@ -12,7 +12,7 @@ async fn main() {
     let sources = Client::new(key)
         .language(Language::English)
         .sources()
-        .send::<Sources>()
+        .send_async::<Sources>()
         .await;
 
     println!("{:?}", sources)

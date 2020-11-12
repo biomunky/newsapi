@@ -62,7 +62,7 @@ impl Client {
     }
 
     /// Send the constructed URL to the newsapi server
-    pub async fn send<T>(&self) -> Result<T, NewsApiError>
+    pub async fn send_async<T>(&self) -> Result<T, NewsApiError>
     where
         T: DeserializeOwned,
     {
@@ -72,7 +72,7 @@ impl Client {
 
         match &self.url {
             Some(url) => {
-                let body = Client::fetch_resource(url, &self.api_key).await?;
+                let body = Client::fetch_resource_async(url, &self.api_key).await?;
                 Ok(serde_json::from_str::<T>(&body)?)
             }
             None => Err(NewsApiError::UndefinedUrlError),
@@ -146,17 +146,19 @@ impl Client {
         }
     }
 
-    async fn fetch_resource(url: &str, api_key: &str) -> Result<String, NewsApiError> {
-        static CLIENT_USER_AGENT: &str = concat!(
-            "rust-",
-            env!("CARGO_PKG_NAME"),
-            "/",
-            env!("CARGO_PKG_VERSION"),
-        );
+    fn create_user_agent() -> String {
+      concat!(
+          "rust-",
+          env!("CARGO_PKG_NAME"),
+          "/",
+          env!("CARGO_PKG_VERSION"),
+      ).to_owned()
+    }
 
+    async fn fetch_resource_async(url: &str, api_key: &str) -> Result<String, NewsApiError> {
         // TODO: create a client that can be reused
         let client = reqwest::Client::builder()
-            .user_agent(CLIENT_USER_AGENT)
+            .user_agent(self::Client::create_user_agent())
             .build()?;
 
         let resp = client.get(url).header("X-Api-Key", api_key).send().await?;
@@ -172,16 +174,9 @@ impl Client {
     }
 
     fn fetch_resource_sync(url: &str, api_key: &str) -> Result<String, NewsApiError> {
-        static CLIENT_USER_AGENT: &str = concat!(
-            "rust-",
-            env!("CARGO_PKG_NAME"),
-            "/",
-            env!("CARGO_PKG_VERSION"),
-        );
-
         // TODO: create a client that can be reused
         let client = reqwest::blocking::Client::builder()
-            .user_agent(CLIENT_USER_AGENT)
+            .user_agent(self::Client::create_user_agent())
             .build()?;
 
         let resp = client.get(url).header("X-Api-Key", api_key).send()?;
