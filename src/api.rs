@@ -147,12 +147,13 @@ impl Client {
     }
 
     fn create_user_agent() -> String {
-      concat!(
-          "rust-",
-          env!("CARGO_PKG_NAME"),
-          "/",
-          env!("CARGO_PKG_VERSION"),
-      ).to_owned()
+        concat!(
+            "rust-",
+            env!("CARGO_PKG_NAME"),
+            "/",
+            env!("CARGO_PKG_VERSION"),
+        )
+        .to_owned()
     }
 
     async fn fetch_resource_async(url: &str, api_key: &str) -> Result<String, NewsApiError> {
