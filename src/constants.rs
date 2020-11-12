@@ -1,5 +1,4 @@
 use enum_map::{enum_map, Enum, EnumMap};
-use lazy_static;
 
 pub const TOP_HEADLINES_URL: &str = "https://newsapi.org/v2/top-headlines";
 
