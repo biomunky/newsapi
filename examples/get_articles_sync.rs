@@ -1,6 +1,6 @@
 use chrono::prelude::*;
 use chrono::Duration;
-use newsapi::api::Client;
+use newsapi::api::NewsAPIClient;
 use newsapi::constants::{Category, Language, SortMethod};
 use newsapi::payload::article::Articles;
 
@@ -13,7 +13,7 @@ fn main() {
     let end_timestamp = Utc::now();
 
     // create a client
-    let mut c = Client::new(key);
+    let mut c = NewsAPIClient::new(key);
 
     c
         // Search German news sources for articles
