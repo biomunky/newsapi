@@ -7,7 +7,15 @@ use newsapi::payload::article::Articles;
 use std::env;
 
 fn main() {
-    let key = env::var("NEWSAPI_KEY").unwrap();
+    let key_var = "NEWSAPI_KEY";
+
+    let key = match env::var(key_var) {
+        Ok(val) => val,
+        Err(error) => panic!(
+            "The '{:?}' environment variable is not set, please set it and try again.\n{:?}",
+            key_var, error
+        ),
+    };
 
     let start_timestamp = Utc::now() - Duration::days(10);
     let end_timestamp = Utc::now();
