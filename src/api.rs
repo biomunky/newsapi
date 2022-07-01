@@ -110,7 +110,7 @@ impl NewsAPIClient {
         if params.is_empty() {
             url
         } else {
-            url.push_str("?");
+            url.push('?');
             url.push_str(&params.join("&"));
             url
         }
@@ -270,7 +270,7 @@ impl NewsAPIClient {
     pub fn query(&mut self, query: &str) -> &mut NewsAPIClient {
         self.parameters.insert(
             "q".to_owned(),
-            utf8_percent_encode(&query, NON_ALPHANUMERIC).to_string(),
+            utf8_percent_encode(query, NON_ALPHANUMERIC).to_string(),
         );
         self
     }
@@ -281,7 +281,7 @@ impl NewsAPIClient {
     }
 
     pub fn page_size(&mut self, size: u32) -> &mut NewsAPIClient {
-        if size >= 1 && size <= 100 {
+        if (1..=100).contains(&size) {
             self.parameters
                 .insert("pageSize".to_owned(), size.to_string());
         }
