@@ -28,7 +28,7 @@ impl PartialEq for ArticleSource {
 pub struct Article {
     pub source: ArticleSource,
     pub author: Option<String>,
-    pub title: String,
+    pub title: Option<String>,
     pub description: Option<String>,
     pub url: String,
     #[serde(rename = "urlToImage")]
