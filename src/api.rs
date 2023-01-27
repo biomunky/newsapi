@@ -393,8 +393,8 @@ mod tests {
     fn to_and_from() {
         let mut api = NewsAPIClient::new("123".to_owned());
 
-        let from = Utc.ymd(2019, 7, 8).and_hms(9, 10, 11);
-        let to = Utc.ymd(2019, 7, 9).and_hms(9, 10, 11);
+        let from = Utc.with_ymd_and_hms(2019, 7, 8, 9, 10, 11).unwrap();
+        let to = Utc.with_ymd_and_hms(2019, 7, 9, 9, 10, 11).unwrap();
 
         api.to(&to).from(&from);
 
