@@ -101,7 +101,7 @@ impl NewsAPIClient {
         let mut params: Vec<String> = vec![];
         for field in allowed_params {
             if let Some(value) = self.parameters.get(field) {
-                params.push(format!("{}={}", field, value))
+                params.push(format!("{field}={value}"))
             }
         }
 
@@ -247,7 +247,7 @@ impl NewsAPIClient {
 
     /// Defaults to all categories - see constants.rs
     pub fn category(&mut self, category: constants::Category) -> &mut NewsAPIClient {
-        let fmtd_category = format!("{:?}", category).to_lowercase();
+        let fmtd_category = format!("{category:?}").to_lowercase();
         self.parameters.insert("category".to_owned(), fmtd_category);
         self
     }
