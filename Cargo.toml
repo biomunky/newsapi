@@ -15,14 +15,13 @@ name = "newsapi"
 path = "src/lib.rs"
 
 [dependencies]
-chrono = {version = "0.4", features = ["serde"]}
+chrono = { version = "0.4", features = ["serde"] }
 custom_error = "1.9"
 enum-map = "2.4"
 lazy_static = "1.4"
 percent-encoding = "2.1"
-reqwest = { version = "0.11", features = ["blocking", "json"]}
+reqwest = { version = "0.11", features = ["blocking", "json"] }
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
-tokio = { version = "1.19", features = ["full"] }
-url = "2.2"
+tokio = { version = "1.19", features = ["rt", "rt-multi-thread", "macros"] }
