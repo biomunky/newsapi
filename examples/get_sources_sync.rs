@@ -13,5 +13,5 @@ fn main() {
         .sources()
         .send_sync::<Sources>();
 
-    println!("{:?}", sources)
+    println!("{}", serde_json::to_string_pretty(&sources.unwrap()).unwrap());
 }
