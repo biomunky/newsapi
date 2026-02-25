@@ -1,3 +1,7 @@
+use serde_derive::{Deserialize, Serialize};
+
+use lazy_static::lazy_static;
+
 use enum_map::{enum_map, Enum, EnumMap};
 
 pub const TOP_HEADLINES_URL: &str = "https://newsapi.org/v2/top-headlines";

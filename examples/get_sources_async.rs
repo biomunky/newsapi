@@ -15,5 +15,6 @@ async fn main() {
         .send_async::<Sources>()
         .await;
 
-    println!("{:?}", sources)
+    let sources = sources.unwrap();
+    println!("{}", serde_json::to_string_pretty(&sources).unwrap());
 }

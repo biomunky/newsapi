@@ -1,5 +1,7 @@
 use crate::constants::Category;
 
+use serde_derive::{Deserialize, Serialize};
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Sources {
     pub status: String,
