@@ -1,5 +1,5 @@
-use chrono::prelude::*;
 use chrono::Duration;
+use chrono::prelude::*;
 use newsapi::api::NewsAPIClient;
 use newsapi::constants::{Category, Language, SortMethod};
 use newsapi::payload::article::Articles;
